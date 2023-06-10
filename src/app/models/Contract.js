@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const contractSchema = new Schema({
-  id: { type: mongoose.Schema.Types.ObjectId },
   mahd: { type: String, require: true },
   giatrihd: { type: Number, require: true },
   ngaybatdau: { type: Date, require: true },

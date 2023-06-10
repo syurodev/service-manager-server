@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const supportFormTypeSchema = new Schema({
-  id: { type: mongoose.Schema.Types.ObjectId },
   title: { type: String, require: true },
   noidung: { type: String, require: true },
   ngaytao: { type: Date, default: Date.now },

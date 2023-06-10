@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const transactionSchema = new Schema({
-  id: { type: mongoose.Schema.Types.ObjectId },
   name: { type: String, require: true },
   diachigd: { type: String, default: "" },
   mota: { type: String, default: "" },

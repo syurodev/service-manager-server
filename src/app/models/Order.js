@@ -8,7 +8,6 @@ const orderItemSchema = new Schema({
 });
 
 const orderSchema = new Schema({
-  id: { type: mongoose.Schema.Types.ObjectId },
   ngaybatdau: { type: Date },
   ngayketthuc: { type: Date },
   nhanvien: { type: mongoose.Schema.Types.ObjectId, ref: "Staff" },

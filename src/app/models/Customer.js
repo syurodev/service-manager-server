@@ -2,10 +2,9 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const customerSchema = new Schema({
-  id: { type: mongoose.Schema.Types.ObjectId },
   name: { type: String, require: true },
   diachivp: { type: String, default: "" },
-  sdt: { type: Number, default: 0 },
+  sdt: { type: Number },
   email: { type: String, default: "" },
   masothue: { type: String, default: "" },
   mota: { type: String, default: "" },
@@ -14,8 +13,10 @@ const customerSchema = new Schema({
   thongtinkhac: { type: String, default: "" },
   stk: { type: Number, default: 0 },
   nguoidaidien: { type: String, default: "" },
-  chucvundd: { type: String, default: "" },
   sdtndd: { type: Number, default: 0 },
+  deleted: { type: Boolean, default: false },
+  deleteAt: { type: Date },
+  deleteBy: { type: mongoose.Schema.Types.ObjectId, ref: "Staff" },
   loaikhachhang: { type: mongoose.Schema.Types.ObjectId, ref: "CustomerType" },
   tinh: { type: mongoose.Schema.Types.ObjectId, ref: "Provinces" },
   phuong: { type: mongoose.Schema.Types.ObjectId, ref: "Districts" },
