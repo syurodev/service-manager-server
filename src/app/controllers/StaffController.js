@@ -19,10 +19,10 @@ class StaffController {
           if (staff) {
             res.status(200).json(staff);
           } else {
-            res.status(204).json({ message: "Không tìm thấy thông tin nhân viên" });
+            res.status(404).json({ message: "Không tìm thấy thông tin nhân viên" });
           }
         } else {
-          res.status(204).json({ message: "Không tìm thấy tài khoản" });
+          res.status(404).json({ message: "Không tìm thấy tài khoản" });
         }
       } else {
         res.status(401).json({ message: "Tài khoản hoặc mật khẩu đã bị bỏ trống" });
@@ -37,7 +37,7 @@ class StaffController {
   async signin(req, res) {
     try {
       const { username, password, nhanvien, role } = req.body
-      if (username.trim() !== "" && password.trim() !== "" && nhanvien.trim() !== "" && role.trim() !== "") {
+      if (username && password && nhanvien && role) {
         const existingAccount = await staffAccountSchema.findOne({ $or: [{ username: username }, { nhanvien: nhanvien }] });
 
         if (!existingAccount) {

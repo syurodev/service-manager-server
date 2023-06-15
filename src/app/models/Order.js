@@ -8,6 +8,7 @@ const orderSchema = new Schema({
   deleteAt: { type: Date, default: null },
   deleteBy: { type: mongoose.Schema.Types.ObjectId, ref: "Staff", default: null },
   nhanvien: { type: mongoose.Schema.Types.ObjectId, ref: "Staff" },
+  khachhang: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
   items: [{ type: mongoose.Schema.Types.ObjectId, ref: "OrderItem" }]
 });
 
