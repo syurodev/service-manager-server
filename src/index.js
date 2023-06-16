@@ -4,7 +4,7 @@ const cors = require("cors");
 const app = express();
 const NodeCache = require("node-cache");
 const route = require("./routes");
-const port = 5413;
+const port = process.env.PORT || 5413;
 const db = require("./config/db");
 
 //app.use(morgan("combined"));
