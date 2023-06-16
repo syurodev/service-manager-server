@@ -143,5 +143,74 @@ class OrderController {
       res.status(500).json({ error: "Internal Server Eror" })
     }
   }
+
+  //[PATCH] /api/order/delete
+  async delete(req, res) {
+    try {
+      const { _id = "", staffid = "" } = req.body
+
+      if (!_id || !staffid) {
+        return res.status(401).json({ message: "Thiếu dữ liệu để thực hiện thao tác xoá" })
+      }
+
+      const order = await orderSchema.findById(_id)
+
+      if (order) {
+        order.deleted = true
+        order.deleteBy = staffid
+        order.deleteAt = Date.now()
+
+        await order.save()
+
+        res.status(201).json({ message: "Xoá đơn hàng thành công" })
+      } else {
+        res.status(501).json({ message: "Không tìm thấy đơn hàng" })
+      }
+
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
+  //[PATCH] /api/order/undelete
+  async undelete(req, res) {
+    try {
+      const { _id } = req.body
+
+      const order = await orderSchema.findById(_id)
+
+      if (order) {
+        order.deleted = false
+        order.deleteBy = null
+        order.deleteAt = null
+
+        await order.save()
+        res.status(201).json({ message: "Khôi phục thành công" })
+      } else {
+        res.status(404).json({ message: "Không tìm thấy đơn hàng" })
+      }
+
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
+  //[DELETE] /api/order/destroy
+  async destroy(req, res) {
+    try {
+      const { _id } = req.query;
+      const result = await orderSchema.deleteOne({ _id });
+      if (result.deletedCount === 1) {
+        res.status(204).json({ message: "Xoá đơn hàng thành công" });
+      } else {
+        res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
 }
 module.exports = new OrderController()
