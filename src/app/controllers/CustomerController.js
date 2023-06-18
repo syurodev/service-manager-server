@@ -202,6 +202,22 @@ class CustomerController {
     }
   }
 
+  //[GET] /api/customer/type
+  async getCustomerType(req, res) {
+    try {
+      const result = await customerTypeSchema.find()
+
+      if (result) {
+        res.status(200).json(result)
+      } else {
+        res.status(404).json({ message: "Không tìm thấy loại khách hàng" })
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
   //[PATCH] /api/customer/change-info
   async changeInfo(req, res) {
     try {
