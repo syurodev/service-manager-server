@@ -345,6 +345,7 @@ class StaffController {
   async addPosition(req, res) {
     try {
       const { name } = req.body
+      console.log(name)
 
       const result = await positionSchema.findOne({ name: { $regex: name, $options: "i" } })
 
