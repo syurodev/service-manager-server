@@ -344,28 +344,31 @@ class StaffController {
   //[POST] /api/staff/add-position
   async addPosition(req, res) {
     try {
-      const { name } = req.body
-      console.log(name)
+      const { name = "" } = req.body
 
-      const result = await positionSchema.findOne({ name: { $regex: name, $options: "i" } })
+      if (name) {
+        const result = await positionSchema.findOne({ name: { $regex: name, $options: "i" } })
 
-      if (result) {
-        res.status(201).json({ message: "Chức vụ đã tồn tại" })
+        if (result) {
+          res.status(201).json({ message: "Chức vụ đã tồn tại" })
+        } else {
+          const data = new positionSchema({
+            name: name
+          })
+
+          await data.save()
+          const cacheKey = `positions`;
+          req.cache.del(cacheKey);
+
+          const positions = await positionSchema.find()
+
+          res.status(201).json({
+            message: "Thêm chức vụ thành công",
+            positions
+          })
+        }
       } else {
-        const data = new positionSchema({
-          name: name
-        })
-
-        await data.save()
-        const cacheKey = `positions`;
-        req.cache.del(cacheKey);
-
-        const positions = await positionSchema.find()
-
-        res.status(201).json({
-          message: "Thêm chức vụ thành công",
-          positions
-        })
+        res.status(401).json({ message: "Không được bỏ trống tên" })
       }
     } catch (error) {
       console.log(error)
