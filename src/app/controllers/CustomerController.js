@@ -364,7 +364,7 @@ class CustomerController {
         customer.deleteAt = Date.now()
 
         await customer.save()
-        res.status(201).json({ message: "Xoá khách hàng thành công" })
+        res.status(201).json({ message: "Khách hàng đã được chuyển đến thùng rác" })
       } else {
         res.status(404).json({ message: "Không tìm thấy khách hàng" })
       }
@@ -403,6 +403,8 @@ class CustomerController {
       const { _id } = req.query;
       const result = await customerSchema.deleteOne({ _id });
       if (result.deletedCount === 1) {
+        const cacheKey = `customer${_id}`;
+        req.cache.del(cacheKey);
         res.status(204).json({ message: "Xoá khách hàng thành công" });
       } else {
         res.status(404).json({ message: "Không tìm thấy khách hàng" });

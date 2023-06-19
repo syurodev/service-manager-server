@@ -221,6 +221,76 @@ class ContractController {
       res.status(500).json({ error: "Internal Server Error" })
     }
   }
+
+  //[PATCH] /api/contract/delete
+  async delete(req, res) {
+    try {
+      const { _id = "", staffid = "" } = req.body
+
+      if (!_id || !staffid) {
+        return res.status(401).json("Thiếu dữ liệu để thực hiện thao tác xoá")
+      }
+
+      const contract = await contractSchema.findById(_id)
+
+      if (contract) {
+        contract.deleted = true
+        contract.deleteBy = staffid
+        contract.deleteAt = Date.now()
+
+        await contract.save()
+        res.status(201).json({ message: "Hợp đồng đã được chuyển đến thùng rác" })
+      } else {
+        res.status(404).json({ message: "Không tìm thấy hợp đồng" })
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
+  //[PATCH] /api/contract/undelete
+  async undelete(req, res) {
+    try {
+      const { _id } = req.body
+
+      const contract = await contractSchema.findById(_id)
+
+      if (contract) {
+        contract.deleted = false
+        contract.deleteBy = null
+        contract.deleteAt = null
+
+        await contract.save()
+        res.status(201).json({ message: "Khôi phục thành công" })
+      } else {
+        res.status(404).json({ message: "Không tìm thấy hợp đồng" })
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
+  //[DELETE] /api/contract/destroy
+  async destroy(req, res) {
+    try {
+      const { _id } = req.query;
+
+      const result = await contractSchema.deleteOne({ _id });
+
+      if (result.deletedCount === 1) {
+        const cacheKey = `contract${_id}`;
+        req.cache.del(cacheKey);
+        res.status(204).json({ message: "Xoá hợp đồng thành công" });
+      } else {
+        res.status(404).json({ message: "Không tìm thấy hợp đồng" });
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
 }
 
 module.exports = new ContractController

@@ -119,59 +119,6 @@ class ContactController {
     }
   }
 
-  //[PATCH] /api/contact/delete
-  async delete(req, res) {
-    try {
-      const { _id = "", staffid = "" } = req.body
-
-      if (!_id || !staffid) {
-        return res.status(401).json({ message: "Thiếu dữ liệu để thực hiện thao tác xoá" })
-      }
-
-      const contact = await contactSchema.findById(_id)
-
-      if (contact) {
-        contact.deleted = true
-        contact.deleteBy = staffid
-        contact.deleteAt = Date.now()
-
-        await contact.save()
-
-        res.status(201).json({ message: "Xoá người liên hệ thành công" })
-      } else {
-        res.status(501).json({ message: "Không tìm thấy người liên hệ" })
-      }
-
-    } catch (error) {
-      console.log(error)
-      res.status(500).json({ error: "Internal Server Error" })
-    }
-  }
-
-  //[PATCH] /api/contact/undelete
-  async undelete(req, res) {
-    try {
-      const { _id } = req.body
-
-      const contact = await contactSchema.findById(_id)
-
-      if (contact) {
-        contact.deleted = false
-        contact.deleteBy = null
-        contact.deleteAt = null
-
-        await contact.save()
-        res.status(201).json({ message: "Khôi phục thành công" })
-      } else {
-        res.status(404).json({ message: "Không tìm thấy người liên hệ" })
-      }
-
-    } catch (error) {
-      console.log(error)
-      res.status(500).json({ error: "Internal Server Error" })
-    }
-  }
-
   //[GET] /api/contact/get
   async get(req, res) {
     try {
@@ -245,12 +192,67 @@ class ContactController {
     }
   }
 
+  //[PATCH] /api/contact/delete
+  async delete(req, res) {
+    try {
+      const { _id = "", staffid = "" } = req.body
+
+      if (!_id || !staffid) {
+        return res.status(401).json({ message: "Thiếu dữ liệu để thực hiện thao tác xoá" })
+      }
+
+      const contact = await contactSchema.findById(_id)
+
+      if (contact) {
+        contact.deleted = true
+        contact.deleteBy = staffid
+        contact.deleteAt = Date.now()
+
+        await contact.save()
+
+        res.status(201).json({ message: "Người liên hệ đã được chuyển đến thùng rác" })
+      } else {
+        res.status(501).json({ message: "Không tìm thấy người liên hệ" })
+      }
+
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
+  //[PATCH] /api/contact/undelete
+  async undelete(req, res) {
+    try {
+      const { _id } = req.body
+
+      const contact = await contactSchema.findById(_id)
+
+      if (contact) {
+        contact.deleted = false
+        contact.deleteBy = null
+        contact.deleteAt = null
+
+        await contact.save()
+        res.status(201).json({ message: "Khôi phục thành công" })
+      } else {
+        res.status(404).json({ message: "Không tìm thấy người liên hệ" })
+      }
+
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
   //[DELETE] /api/contact/destroy
   async destroy(req, res) {
     try {
       const { _id } = req.query;
       const result = await contactSchema.deleteOne({ _id });
       if (result.deletedCount === 1) {
+        const cacheKey = `contact${_id}`;
+        req.cache.del(cacheKey);
         res.status(204).json({ message: "Xoá người liên hệ thành công" });
       } else {
         res.status(404).json({ message: "Không tìm thấy người liên hệ" });

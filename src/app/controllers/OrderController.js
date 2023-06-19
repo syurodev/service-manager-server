@@ -131,9 +131,11 @@ class OrderController {
 
         await order.save()
 
+        const cacheKey = `order${_id}`;
+        req.cache.del(cacheKey);
+
         res.status(201).json({
-          message: "Thay đổi thông tin đơn hàng thành công",
-          order
+          message: "Thay đổi thông tin đơn hàng thành công"
         })
       } else {
         res.status(404).json({ message: "Không tìm thấy thông tin đơn hàng" })
@@ -162,7 +164,7 @@ class OrderController {
 
         await order.save()
 
-        res.status(201).json({ message: "Xoá đơn hàng thành công" })
+        res.status(201).json({ message: "Đơn hàng đã được chuyển đến thùng rác" })
       } else {
         res.status(501).json({ message: "Không tìm thấy đơn hàng" })
       }
@@ -202,7 +204,10 @@ class OrderController {
     try {
       const { _id } = req.query;
       const result = await orderSchema.deleteOne({ _id });
+
       if (result.deletedCount === 1) {
+        const cacheKey = `order${_id}`;
+        req.cache.del(cacheKey);
         res.status(204).json({ message: "Xoá đơn hàng thành công" });
       } else {
         res.status(404).json({ message: "Không tìm thấy đơn hàng" });
