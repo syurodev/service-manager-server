@@ -20,6 +20,16 @@ class OrderController {
       for (const orderItemData of orderItems) {
         const { hanghoa, soluong, chietkhau } = orderItemData;
 
+        const commodity = await commoditySchema.findById(hanghoa);
+
+        if (!commodity) {
+          return res.status(400).json({ message: 'Hàng hoá không tồn tại' });
+        }
+
+        if (commodity.soluongtrongkho < soluong) {
+          return res.status(400).json({ message: 'Không đủ số lượng hàng hoá trong kho' });
+        }
+
         const orderItem = orderItemSchema({
           hanghoa,
           soluong,
@@ -28,6 +38,8 @@ class OrderController {
 
         const savedOrderItem = await orderItem.save();
         order.items.push(savedOrderItem._id);
+
+        await commoditySchema.findByIdAndUpdate(hanghoa, { $inc: { soluongtrongkho: -soluong } });
       }
 
       await order.save();
