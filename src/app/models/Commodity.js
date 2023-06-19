@@ -10,7 +10,7 @@ const commoditySchema = new Schema({
   mota: { type: String, default: "" },
   thue: { type: Number, default: 0 },
   trangthai: { type: Number, default: 0 },
-  soluongtrongkho: { type: Number, default: 0 },
+  soluongtrongkho: { type: Number, default: 1 },
   deleted: { type: Boolean, default: false },
   deleteAt: { type: Date },
   deleteBy: { type: mongoose.Schema.Types.ObjectId, ref: "Staff" },

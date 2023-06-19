@@ -3,6 +3,7 @@ const customerRouter = require("./private/customer.route");
 const commodityRouter = require("./private/commodity.route");
 const contactRouter = require("./private/contact.route");
 const orderRouter = require("./private/order.route");
+const contractRouter = require("./private/contract.route");
 
 function route(app) {
   app.use("/api/staff", staffRouter);
@@ -10,5 +11,6 @@ function route(app) {
   app.use("/api/commodity", commodityRouter);
   app.use("/api/contact", contactRouter);
   app.use("/api/order", orderRouter);
+  app.use("/api/contract", contractRouter);
 }
 module.exports = route;

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const orderSchema = new Schema({
+  madh: { type: String },
   ngaybatdau: { type: Date },
   ngayketthuc: { type: Date },
   deleted: { type: Boolean, default: false },
