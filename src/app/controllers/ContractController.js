@@ -88,6 +88,7 @@ class ContractController {
       const _id = req.params.id
 
       const cacheKey = `contract${_id}`;
+
       const cachedData = req.cache.get(cacheKey);
 
       if (cachedData) {
@@ -96,14 +97,66 @@ class ContractController {
 
       const contract = await contractSchema.findById(_id)
         .populate("nhanvien", "hoten")
-        .populate("doanhsotinhcho", "hoten")
         .populate("loadhd", "loaihd")
         .populate("khachhang", "name")
-        .populate("donhang", "madh")
+        .populate({
+          path: 'donhang',
+          model: 'Order',
+          select: 'madh',
+          populate: {
+            path: 'items',
+            model: 'OrderItem',
+            select: 'soluong chietkhau',
+            populate: {
+              path: 'hanghoa',
+              model: 'Commodity',
+              select: 'mahh name giabanra thue'
+            },
+          },
+        });
 
       if (contract) {
-        req.cache.set(cacheKey, contract);
-        res.status(201).json(contract)
+        const formattedContract = {
+          nhanvien: contract.nhanvien.hoten,
+          khachhang: contract.khachhang.name,
+          loaihd: contract.loadhd.loaihd,
+          ngaybatdau: contract.ngaybatdau,
+          ngayketthuc: contract.ngayketthuc,
+          hinhthuctt: contract.hinhthuctt,
+          loaitt: contract.loaitt,
+          sotientt: contract.sotientt,
+          ngaytt: contract.ngaytt,
+          soquy: contract.soquy,
+          ghichu: contract.ghichu,
+          items: contract.donhang.items.map((item) => {
+            const giabanra = item.hanghoa.giabanra;
+            const thue = item.hanghoa.thue;
+            const soluong = item.soluong;
+            const chietkhau = item.chietkhau;
+
+            // Tính giá trị hàng hoá
+            const giaTriHangHoa = (giabanra + giabanra * (thue / 100)) * soluong * (1 - chietkhau / 100);
+
+            return {
+              tenhh: item.hanghoa.name,
+              giabanra,
+              thue,
+              mahh: item.hanghoa.mahh,
+              soluong,
+              chietkhau,
+              tongtien: giaTriHangHoa,
+            };
+          })
+        };
+
+        // Tính tổng giá trị hợp đồng
+        const giatrihopdong = formattedContract.items.reduce((total, item) => total + item.tongtien, 0);
+
+        formattedContract.giatrihopdong = giatrihopdong;
+        formattedContract.sotienconlai = giatrihopdong - formattedContract.sotientt;
+
+        //req.cache.set(cacheKey, contract);
+        res.status(201).json(formattedContract)
       } else {
         res.status(404).json({ message: "Không tìm thấy người liên hệ" })
       }
@@ -120,9 +173,9 @@ class ContractController {
       const cacheKey = "contracttypes";
       req.cache.del(cacheKey);
 
-      const existingContractType = await contractTypeSchema.find({ loaihd: { $regex: loaihd } })
+      const existingContractType = await contractTypeSchema.find({ loaihd: { $regex: loaihd, $options: "i" } })
 
-      if (existingContractType) {
+      if (existingContractType.length > 0) {
         return res.status(201).json({ message: "Loại hợp đồng đã tồn tại" })
       }
 
