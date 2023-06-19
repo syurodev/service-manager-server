@@ -82,6 +82,37 @@ class ContractController {
     }
   }
 
+  //[GET] /api/contract/:id
+  async info(req, res) {
+    try {
+      const _id = req.params.id
+
+      const cacheKey = `contract${_id}`;
+      const cachedData = req.cache.get(cacheKey);
+
+      if (cachedData) {
+        return res.status(201).json(cachedData);
+      }
+
+      const contract = await contractSchema.findById(_id)
+        .populate("nhanvien", "hoten")
+        .populate("doanhsotinhcho", "hoten")
+        .populate("loadhd", "loaihd")
+        .populate("khachhang", "name")
+        .populate("donhang", "madh")
+
+      if (contract) {
+        req.cache.set(cacheKey, contract);
+        res.status(201).json(contract)
+      } else {
+        res.status(404).json({ message: "Không tìm thấy người liên hệ" })
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
 }
 
 module.exports = new ContractController
