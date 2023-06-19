@@ -8,6 +8,7 @@ router.patch("/edit", orderController.edit);
 router.patch("/delete", orderController.delete);
 router.patch("/undelete", orderController.undelete);
 router.delete("/destroy", orderController.destroy);
+router.get("/:id", orderController.info);
 router.get("/", orderController.get);
 
 module.exports = router;

@@ -89,6 +89,53 @@ class OrderController {
     }
   }
 
+  //[GET] /api/order/:id
+  async info(req, res) {
+    try {
+      const _id = req.params.id
+
+      const cacheKey = `order${_id}`;
+      const cachedData = req.cache.get(cacheKey);
+
+      if (cachedData) {
+        return res.status(201).json(cachedData);
+      }
+
+      const order = await orderSchema.findById(_id)
+        .populate("nhanvien", "hoten")
+        .populate("khachhang", "name")
+        .populate({
+          path: 'items',
+          populate: {
+            path: 'hanghoa',
+            model: 'Commodity',
+            select: 'name'
+          },
+          select: 'soluong chietkhau'
+        });
+
+      if (order) {
+        const formattedOrder = {
+          nhanvien: order.nhanvien.hoten,
+          khachhang: order.khachhang.name,
+          items: order.items.map((item) => ({
+            tenhh: item.hanghoa.name,
+            soluong: item.soluong,
+            chietkhau: item.chietkhau
+          }))
+        };
+
+        req.cache.set(cacheKey, formattedOrder);
+        res.status(201).json({ order: formattedOrder })
+      } else {
+        res.status(404).json({ message: "Không tìm thấy đơn hàng" })
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
   //[PATCH] /api/order/edit
   async edit(req, res) {
     try {
