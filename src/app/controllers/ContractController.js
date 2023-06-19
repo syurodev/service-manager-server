@@ -113,6 +113,63 @@ class ContractController {
     }
   }
 
+  //[POST] /api/contract/type
+  async addContractType(req, res) {
+    try {
+      const { loaihd, mota = "" } = req.body
+      const cacheKey = "contracttypes";
+      req.cache.del(cacheKey);
+
+      const existingContractType = await contractTypeSchema.find({ loaihd: { $regex: loaihd } })
+
+      if (existingContractType) {
+        return res.status(201).json({ message: "Loại hợp đồng đã tồn tại" })
+      }
+
+      const newContractType = new contractTypeSchema({
+        loaihd,
+        mota
+      })
+
+      await newContractType.save()
+
+      const contractTypes = await contractTypeSchema.find({}, "loaihd")
+      req.cache.set(cacheKey, contractTypes);
+
+      res.status(201).json({
+        message: "Thêm loại hợp đồng thành công",
+        contractTypes
+      })
+
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
+  //[GET] /api/contract/type
+  async getContractType(req, res) {
+    try {
+      const cacheKey = `contracttypes`;
+      const cachedData = req.cache.get(cacheKey);
+
+      if (cachedData) {
+        return res.status(201).json(cachedData);
+      }
+
+      const result = await contractTypeSchema.find()
+
+      if (result) {
+        req.cache.set(cacheKey, result);
+        res.status(200).json(result)
+      } else {
+        res.status(404).json({ message: "Không tìm thấy loại hợp đồng" })
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
 }
 
 module.exports = new ContractController

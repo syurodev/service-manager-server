@@ -175,6 +175,8 @@ class CustomerController {
   async addCustomerType(req, res) {
     try {
       const { name, mota } = req.body
+      const cacheKey = `customertypes`;
+      req.cache.del(cacheKey);
 
       const result = await customerTypeSchema.findOne({ name: { $regex: name, $options: "i" } })
 
@@ -190,6 +192,7 @@ class CustomerController {
 
         await data.save()
         const customerTypes = await customerTypeSchema.find({}, "name")
+        req.cache.set(cacheKey, customerTypes);
 
         res.status(201).json({
           message: "Thêm loại khách hàng thành công",
@@ -205,9 +208,17 @@ class CustomerController {
   //[GET] /api/customer/type
   async getCustomerType(req, res) {
     try {
+      const cacheKey = `customertypes`;
+      const cachedData = req.cache.get(cacheKey);
+
+      if (cachedData) {
+        return res.status(201).json(cachedData);
+      }
+
       const result = await customerTypeSchema.find()
 
       if (result) {
+        req.cache.set(cacheKey, result);
         res.status(200).json(result)
       } else {
         res.status(404).json({ message: "Không tìm thấy loại khách hàng" })
