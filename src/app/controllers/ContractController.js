@@ -11,9 +11,9 @@ class ContractController {
 
       const existingContract = await contractSchema.find({ mahd: { $regex: mahd } })
 
-      if (existingContract) {
+      if (existingContract.length > 0) {
         return res.status(201).json({
-          message: "Hợp đồng đã tồn tại",
+          message: "Mã hợp đồng đã tồn tại",
           contract: existingContract
         })
       }
@@ -165,6 +165,57 @@ class ContractController {
       } else {
         res.status(404).json({ message: "Không tìm thấy loại hợp đồng" })
       }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
+  //[PATCH] /api/contract/change-info
+  async changeInfo(req, res) {
+    try {
+      const { _id, mahd, giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
+        sotientt = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loadhd, nhanvien,
+        doanhsotinhcho, khachhang, donhang } = req.body
+
+      const contract = await contractSchema.findById(_id)
+
+      if (contract) {
+        const existingContract = await contractSchema.find({ mahd: { $regex: mahd } })
+
+        if (existingContract.length > 0) {
+          return res.status(201).json({ message: "Mã hợp đồng đã tồn tại" })
+        }
+
+        contract.mahd = mahd || contract.mahd
+        contract.giatrihd = giatrihd || contract.giatrihd
+        contract.ngaybatdau = ngaybatdau || contract.ngaybatdau
+        contract.ngayketthuc = ngayketthuc || contract.ngayketthuc
+        contract.canhbaohh = canhbaohh || contract.canhbaohh
+        contract.hinhthuctt = hinhthuctt || contract.hinhthuctt
+        contract.loaitt = loaitt || contract.loaitt
+        contract.sotientt = sotientt || contract.sotientt
+        contract.ngaytt = ngaytt || contract.ngaytt
+        contract.soquy = soquy || contract.soquy
+        contract.xacnhan = xacnhan || contract.xacnhan
+        contract.ghichu = ghichu || contract.ghichu
+        contract.guiemail = guiemail || contract.guiemail
+        contract.ghichuthuong = ghichuthuong || contract.ghichuthuong
+        contract.loadhd = loadhd || contract.loadhd
+        contract.nhanvien = nhanvien || contract.nhanvien
+        contract.doanhsotinhcho = doanhsotinhcho || contract.doanhsotinhcho
+        contract.khachhang = khachhang || contract.khachhang
+        contract.donhang = donhang || contract.donhang
+
+        await contract.save()
+        const cacheKey = `contract${_id}`;
+        req.cache.del(cacheKey);
+
+        res.status(201).json({ message: "Chỉnh sửa thông tin hợp đồng thành công" })
+      } else {
+        res.status(404).json({ message: "Không tìm thấy thông tin hợp đồng thành công" })
+      }
+
     } catch (error) {
       console.log(error)
       res.status(500).json({ error: "Internal Server Error" })
