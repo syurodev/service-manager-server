@@ -32,6 +32,31 @@ class CommodityController {
     }
   }
 
+  //[GET] /api/commodity/type
+  async getCommodityType(req, res) {
+    try {
+      const cacheKey = "commoditytypes";
+      const cachedData = req.cache.get(cacheKey);
+
+      if (cachedData) {
+        return res.status(201).json(cachedData);
+      }
+
+      const commodityTypes = await commodityTypeSchema.find({}, "loaihh")
+
+      if (commodityTypes.length > 0) {
+        req.cache.set(cacheKey, commodityTypes);
+        res.status(201).json(commodityTypes)
+      } else {
+        res.status(404).json({ message: "Không tìm thấy loại hàng hoá" })
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+
+  }
+
   //[POST] /api/commodity/create-type
   async createCommodityType(req, res) {
     try {
@@ -44,6 +69,9 @@ class CommodityController {
           message: "Loại hàng hoá đã tồn tại"
         })
       } else {
+        const cacheKey = "commoditytypes";
+        req.cache.del(cacheKey);
+
         const data = new commodityTypeSchema({
           loaihh: loaihh,
           mota: mota
