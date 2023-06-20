@@ -69,7 +69,7 @@ class CommodityController {
           message: "Loại hàng hoá đã tồn tại"
         })
       } else {
-        const cacheKey = "commoditytypes";
+        const cacheKey = "commodityunits";
         req.cache.del(cacheKey);
 
         const data = new commodityTypeSchema({
@@ -91,6 +91,31 @@ class CommodityController {
 
   }
 
+  //[GET] /api/commodity/unit
+  async getCommodityUnit(req, res) {
+    try {
+      const cacheKey = "commodityunits";
+      const cachedData = req.cache.get(cacheKey);
+
+      if (cachedData) {
+        return res.status(201).json(cachedData);
+      }
+
+      const commodityUnits = await commodityUnitSchema.find({}, "dvt")
+
+      if (commodityUnits.length > 0) {
+        req.cache.set(cacheKey, commodityUnits);
+        res.status(201).json(commodityUnits)
+      } else {
+        res.status(404).json({ message: "Không tìm thấy đơn vị tính" })
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+
+  }
+
   //[POST] /api/commodity/create-unit
   async createCommodityUnit(req, res) {
     try {
@@ -101,6 +126,9 @@ class CommodityController {
       if (result) {
         res.status(201).json({ message: "Đơn vị tính đã tồn tại" })
       } else {
+        const cacheKey = "commoditytypes";
+        req.cache.del(cacheKey);
+
         const data = new commodityUnitSchema({
           dvt: dvt,
         })

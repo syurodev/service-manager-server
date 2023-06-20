@@ -6,8 +6,8 @@ const commodityController = require("../../app/controllers/CommodityController")
 router.post("/create", commodityController.create);
 router.post("/create-type", commodityController.createCommodityType);
 router.post("/create-unit", commodityController.createCommodityUnit);
-router.get("/type", commodityController.getCommodityType);
-router.get("/unit", commodityController.getCommodityUnit);
+router.get("/types", commodityController.getCommodityType);
+router.get("/units", commodityController.getCommodityUnit);
 router.patch("/change-info", commodityController.changeInfo);
 router.patch("/delete", commodityController.delete);
 router.patch("/undelete", commodityController.undelete);
