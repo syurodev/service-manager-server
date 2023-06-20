@@ -3,9 +3,10 @@ const router = express.Router();
 
 const contractController = require("../../app/controllers/ContractController");
 
-router.post("/create", contractController.create);
 router.post("/type", contractController.addContractType);
-router.get("/type", contractController.getContractType);
+router.get("/types", contractController.getContractTypes);
+
+router.post("/create", contractController.create);
 router.patch("/change-info", contractController.changeInfo);
 router.patch("/delete", contractController.delete);
 router.patch("/undelete", contractController.undelete);

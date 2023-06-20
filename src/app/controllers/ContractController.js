@@ -186,12 +186,9 @@ class ContractController {
 
       await newContractType.save()
 
-      const contractTypes = await contractTypeSchema.find({}, "loaihd")
-      req.cache.set(cacheKey, contractTypes);
-
       res.status(201).json({
         message: "Thêm loại hợp đồng thành công",
-        contractTypes
+        newContractType
       })
 
     } catch (error) {
@@ -201,7 +198,7 @@ class ContractController {
   }
 
   //[GET] /api/contract/type
-  async getContractType(req, res) {
+  async getContractTypes(req, res) {
     try {
       const cacheKey = `contracttypes`;
       const cachedData = req.cache.get(cacheKey);

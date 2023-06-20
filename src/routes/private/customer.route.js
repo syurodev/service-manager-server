@@ -3,13 +3,14 @@ const router = express.Router();
 
 const customerController = require("../../app/controllers/CustomerController");
 
+router.post("/type", customerController.addCustomerType);
+router.get("/types", customerController.getCustomerTypes);
+
 router.post("/create", customerController.create);
 router.patch("/change-info", customerController.changeInfo);
 router.patch("/delete", customerController.delete);
 router.patch("/undelete", customerController.undelete);
 router.delete("/destroy", customerController.destroy);
-router.post("/type", customerController.addCustomerType);
-router.get("/type", customerController.getCustomerType);
 router.get("/:id", customerController.info);
 router.get("/", customerController.get);
 

@@ -3,11 +3,14 @@ const router = express.Router();
 
 const commodityController = require("../../app/controllers/CommodityController");
 
-router.post("/create", commodityController.create);
+
 router.post("/create-type", commodityController.createCommodityType);
+router.get("/types", commodityController.getCommodityTypes);
+
 router.post("/create-unit", commodityController.createCommodityUnit);
-router.get("/types", commodityController.getCommodityType);
-router.get("/units", commodityController.getCommodityUnit);
+router.get("/units", commodityController.getCommodityUnits);
+
+router.post("/create", commodityController.create);
 router.patch("/change-info", commodityController.changeInfo);
 router.patch("/delete", commodityController.delete);
 router.patch("/undelete", commodityController.undelete);

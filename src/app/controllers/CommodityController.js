@@ -33,7 +33,7 @@ class CommodityController {
   }
 
   //[GET] /api/commodity/type
-  async getCommodityType(req, res) {
+  async getCommodityTypes(req, res) {
     try {
       const cacheKey = "commoditytypes";
       const cachedData = req.cache.get(cacheKey);
@@ -92,7 +92,7 @@ class CommodityController {
   }
 
   //[GET] /api/commodity/unit
-  async getCommodityUnit(req, res) {
+  async getCommodityUnits(req, res) {
     try {
       const cacheKey = "commodityunits";
       const cachedData = req.cache.get(cacheKey);

@@ -206,7 +206,7 @@ class CustomerController {
   }
 
   //[GET] /api/customer/type
-  async getCustomerType(req, res) {
+  async getCustomerTypes(req, res) {
     try {
       const cacheKey = `customertypes`;
       const cachedData = req.cache.get(cacheKey);
