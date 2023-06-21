@@ -288,7 +288,7 @@ class StaffController {
   //[GET] /api/staff/
   async get(req, res) {
     try {
-      const { limit = 15, sort = "ngayvaolam", page = 1, q = "", chucvu = null, tinh = null, phuong = null, xa = null } = req.query
+      const { limit = 10, sort = "ngayvaolam", page = 1, q = "", chucvu = null, tinh = null, phuong = null, xa = null } = req.query
       const query = {}
 
       if (q) {
