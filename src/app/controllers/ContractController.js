@@ -1,5 +1,6 @@
 const contractSchema = require("../models/Contract")
 const contractTypeSchema = require("../models/ContractType")
+const orderSchema = require("../models/Order")
 
 class ContractController {
   //[POST] /api/contract/create
@@ -51,7 +52,7 @@ class ContractController {
         query.loadhd = { $regex: loadhd }
       }
 
-      const count = await orderSchema.countDocuments(query)
+      const count = await contractSchema.countDocuments(query)
       const totalPages = Math.ceil(count / limit);
       const skip = (page - 1) * limit;
 
