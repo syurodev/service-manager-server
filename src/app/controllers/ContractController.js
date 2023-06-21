@@ -64,7 +64,7 @@ class ContractController {
       const contract = await contractSchema.find(query)
         .populate("nhanvien", "hoten")
         .populate("doanhsotinhcho", "hoten")
-        .populate("loadhd", "loaihd")
+        .populate("loaihd", "loaihd")
         .populate("khachhang", "name")
         .populate("donhang", "madh")
         .limit(limit)

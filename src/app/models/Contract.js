@@ -19,7 +19,7 @@ const contractSchema = new Schema({
   deleted: { type: Boolean, default: false },
   deleteAt: { type: Date, default: null },
   deleteBy: { type: mongoose.Schema.Types.ObjectId, ref: "Staff", default: null },
-  loadhd: { type: mongoose.Schema.Types.ObjectId, ref: "ContractType" },
+  loaihd: { type: mongoose.Schema.Types.ObjectId, ref: "ContractType" },
   nhanvien: { type: mongoose.Schema.Types.ObjectId, ref: "Staff" },
   doanhsotinhcho: { type: mongoose.Schema.Types.ObjectId, ref: "Staff" },
   khachhang: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
