@@ -12,11 +12,14 @@ const transactionSchema = new Schema({
   ketquagd: { type: String, default: "" },
   guiemail: { type: Boolean, default: false },
   tailieugiaodich: { type: String, default: "" },
+  deleteAt: { type: Date },
+  deleted: { type: Boolean, default: false },
   loaigd: { type: mongoose.Schema.Types.ObjectId, ref: "TransactionType" },
   trangthaigd: { type: mongoose.Schema.Types.ObjectId, ref: "TransactionStatus" },
   khachhang: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
   nguoilienhe: { type: mongoose.Schema.Types.ObjectId, ref: "Contact" },
   nhanvien: { type: mongoose.Schema.Types.ObjectId, ref: "Staff" },
+  deleteBy: { type: mongoose.Schema.Types.ObjectId, ref: "Staff" },
 });
 
 module.exports = mongoose.model("Transaction", transactionSchema);
