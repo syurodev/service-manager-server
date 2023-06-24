@@ -232,6 +232,76 @@ class TransactionController {
     }
   }
 
+  //[PATCH] /api/transaction/delete
+  async delete(req, res) {
+    try {
+      const { _id = "", staffid = "" } = req.body
+
+      if (!_id || !staffid) {
+        return res.status(401).json("Thiếu dữ liệu để thực hiện thao tác xoá")
+      }
+
+      const transaction = await transactionSchema.findById(_id)
+
+      if (transaction) {
+        transaction.deleted = true
+        transaction.deleteBy = staffid
+        transaction.deleteAt = Date.now()
+
+        await transaction.save()
+        res.status(201).json({ message: "Giao dịch đã được chuyển đến thùng rác" })
+      } else {
+        res.status(404).json({ message: "Không tìm thấy giao dịch" })
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error", error })
+    }
+  }
+
+  //[PATCH] /api/transaction/undelete
+  async undelete(req, res) {
+    try {
+      const { _id } = req.body
+
+      const transaction = await transactionSchema.findById(_id)
+
+      if (transaction) {
+        transaction.deleted = false
+        transaction.deleteBy = null
+        transaction.deleteAt = null
+
+        await contract.save()
+        res.status(201).json({ message: "Khôi phục thành công" })
+      } else {
+        res.status(204).json({ message: "Không tìm thấy giao dịch" })
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error", error })
+    }
+  }
+
+  //[DELETE] /api/transaction/destroy
+  async destroy(req, res) {
+    try {
+      const { _id } = req.query;
+
+      const result = await transactionSchema.deleteOne({ _id });
+
+      if (result.deletedCount === 1) {
+        const cacheKey = `transaction${_id}`;
+        req.cache.del(cacheKey);
+        res.status(204).json({ message: "Xoá hợp đồng thành công" });
+      } else {
+        res.status(404).json({ message: "Không tìm thấy hợp đồng" });
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error", error })
+    }
+  }
+
   //[GET] /api/transaction/:id
   async info(req, res) {
     try {
