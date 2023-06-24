@@ -116,20 +116,20 @@ class TransactionController {
     try {
       const {
         name,
-        diachigd,
-        mota,
-        danhgia,
-        ngaybatdau,
-        hanhoanthanh,
-        songaygd,
-        ketquagd,
-        guiemail,
-        tailieugiaodich,
-        loaigd,
-        trangthaigd,
-        khachhang,
-        nguoilienhe,
-        nhanvien,
+        diachigd = null,
+        mota = null,
+        danhgia = null,
+        ngaybatdau = null,
+        hanhoanthanh = null,
+        songaygd = null,
+        ketquagd = null,
+        guiemail = flase,
+        tailieugiaodich = null,
+        loaigd = null,
+        trangthaigd = null,
+        khachhang = null,
+        nguoilienhe = null,
+        nhanvien = null,
       } = req.body
 
       const existingTransaction = await transactionSchema.find({ name: { $regex: name, $options: "i" } })
@@ -164,6 +164,86 @@ class TransactionController {
     }
   }
 
+  //[GET] /api/transaction/:id
+  async info(req, res) {
+    try {
+      const _id = req.params.id
+
+      const cacheKey = `transaction${_id}`;
+      const cachedData = req.cache.get(cacheKey);
+
+      if (cachedData) {
+        return res.status(201).json(cachedData);
+      }
+
+      const transaction = await transactionSchema.findById(_id)
+        .populate("loaigd", "name")
+        .populate("trangthaigd", "name")
+        .populate("khachhang", "name sdt email")
+        .populate("nhanvien", "hoten")
+        .populate("nguoilienhe", "name sdt email")
+
+      if (transaction) {
+        req.cache.set(cacheKey, transaction);
+        res.status(201).json({ transaction: transaction })
+      } else {
+        res.status(404).json({ message: "Không tìm thấy đơn hàng" })
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
+  //[GET] /api/transaction/
+  async get(req, res) {
+    try {
+      const { q = "", loaigd = null, trangthaigd = null, khachhang = null, nguoilienhe = null, nhanvien = null, deleted = false } = req.query
+
+      const query = { deleted: deleted }
+
+      if (q) {
+        query.name = { $regex: q, $options: "i" }
+      }
+
+      if (loaigd) {
+        query.loaigd = { $regex: loaigd, $options: "i" }
+      }
+
+      if (trangthaigd) {
+        query.trangthaigd = { $regex: trangthaigd, $options: "i" }
+      }
+
+      if (khachhang) {
+        query.khachhang = { $regex: khachhang, $options: "i" }
+      }
+
+      if (nguoilienhe) {
+        query.nguoilienhe = { $regex: nguoilienhe, $options: "i" }
+      }
+
+      if (nhanvien) {
+        query.nhanvien = { $regex: nhanvien, $options: "i" }
+      }
+
+      const result = await transactionSchema.find(query, "name danhgia")
+        .populate("loaigd", "name")
+        .populate("trangthaigd", "name")
+        .populate("khachhang", "name")
+        .populate("nhanvien", "hoten")
+        .populate("nguoilienhe", "name")
+
+      if (result.length > 0) {
+        res.status(201).json({ result })
+      } else {
+        res.status(201).json({ message: "Không có giao dịch" })
+      }
+
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error", error })
+    }
+  }
 }
 
 module.exports = new TransactionController()

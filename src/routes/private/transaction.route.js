@@ -10,5 +10,7 @@ router.post("/status", transactionController.addTransactionStatus);
 router.get("/status", transactionController.getTransactionStatus);
 
 router.post("/create", transactionController.create)
+router.get("/:id", transactionController.info)
+router.get("/", transactionController.get)
 
 module.exports = router;
