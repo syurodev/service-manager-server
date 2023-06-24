@@ -10,6 +10,7 @@ router.post("/status", transactionController.addTransactionStatus);
 router.get("/status", transactionController.getTransactionStatus);
 
 router.post("/create", transactionController.create)
+router.patch("/edit", transactionController.edit);
 router.get("/:id", transactionController.info)
 router.get("/", transactionController.get)
 

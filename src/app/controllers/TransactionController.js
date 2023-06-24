@@ -123,7 +123,7 @@ class TransactionController {
         hanhoanthanh = null,
         songaygd = null,
         ketquagd = null,
-        guiemail = flase,
+        guiemail = false,
         tailieugiaodich = null,
         loaigd = null,
         trangthaigd = null,
@@ -161,6 +161,74 @@ class TransactionController {
     } catch (error) {
       console.log(error)
       res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
+  //[PATCH] /api/transaction/edit
+  async edit(req, res) {
+    try {
+      const {
+        _id,
+        name,
+        diachigd = null,
+        mota = null,
+        danhgia = null,
+        ngaybatdau = null,
+        hanhoanthanh = null,
+        songaygd = null,
+        ketquagd = null,
+        guiemail = false,
+        tailieugiaodich = null,
+        loaigd = null,
+        trangthaigd = null,
+        khachhang = null,
+        nguoilienhe = null,
+        nhanvien = null,
+      } = req.body
+
+      const transaction = await transactionSchema.findById(_id)
+
+      if (transaction) {
+        const existingTransactions = await transactionSchema.find({ name: { $regex: name, $options: "i" } })
+
+        if (existingTransactions.length > 0) {
+          for (let i = 0; i < existingTransactions.length; i++) {
+            const existingTransaction = existingTransactions[i]
+
+            if (existingTransaction.name.toLowerCase() === name.toLowerCase() && existingTransaction.name.toLowerCase() !== transaction.name.toLowerCase()) {
+              return res.status(201).json({ message: "Tên giao dịch đã tồn tại" })
+            }
+          }
+        }
+
+        const cacheKey = `transaction${_id}`;
+        req.cache.del(cacheKey);
+
+        transaction.name = name || transaction.name
+        transaction.diachigd = diachigd || transaction.diachigd
+        transaction.mota = mota || transaction.mota
+        transaction.danhgia = danhgia || transaction.danhgia
+        transaction.ngaybatdau = ngaybatdau || transaction.ngaybatdau
+        transaction.hanhoanthanh = hanhoanthanh || transaction.hanhoanthanh
+        transaction.songaygd = songaygd || transaction.songaygd
+        transaction.ketquagd = ketquagd || transaction.ketquagd
+        transaction.guiemail = guiemail || transaction.guiemail
+        transaction.tailieugiaodich = tailieugiaodich || transaction.tailieugiaodich
+        transaction.loaigd = loaigd || transaction.loaigd
+        transaction.trangthaigd = trangthaigd || transaction.trangthaigd
+        transaction.ketquagd = ketquagd || transaction.ketquagd
+        transaction.khachhang = khachhang || transaction.khachhang
+        transaction.nguoilienhe = nguoilienhe || transaction.nguoilienhe
+        transaction.nhanvien = nhanvien || transaction.nhanvien
+
+        await transaction.save()
+        res.status(201).json({ message: "Thay đổi thông tin thành công", transaction })
+      } else {
+        res.status(204).json({ message: "Không tìm thấy thông tin giao dịch" })
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error", error })
     }
   }
 
