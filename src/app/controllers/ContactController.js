@@ -8,6 +8,7 @@ class ContactController {
         lienhechinh = false, trangthai, chucvu } = req.body
 
       const hoten = name.toString()
+      const data = req.body
 
       if (sdt) {
         if (/^\d+$/.test(sdt.toString())) {
@@ -19,7 +20,7 @@ class ContactController {
       }
 
       if (name?.trim() === "") {
-        return res.status(201).json({ message: "Tên người liên hệ là bắt buộc", name })
+        return res.status(201).json({ message: "Tên người liên hệ là bắt buộc", data })
       }
 
       const existingContact = await contactSchema.find({ name: { $regex: hoten, $options: "i" } })
