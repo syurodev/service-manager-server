@@ -4,11 +4,13 @@ class ContactController {
   //[POST] /api/contact/create
   async create(req, res) {
     try {
-      let { name, sdt = null, email = null, ngaysinh, gioitinh,
+      let { name = "", sdt = null, email = null, ngaysinh, gioitinh,
         lienhechinh = false, trangthai, chucvu } = req.body
 
+      const hoten = name.toString()
+
       if (sdt) {
-        if (/^\d+$/.test(sdt)) {
+        if (/^\d+$/.test(sdt.toString())) {
           if (sdt.startsWith('0')) {
             sdt = '84' + sdt.substring(1);
           }
@@ -20,7 +22,7 @@ class ContactController {
         return res.status(401).json({ message: "Tên người liên hệ là bắt buộc" })
       }
 
-      const existingContact = await contactSchema.find({ name: { $regex: name, $options: "i" } })
+      const existingContact = await contactSchema.find({ name: { $regex: hoten, $options: "i" } })
 
       if (existingContact.length > 0) {
         return res.status(201).json({
