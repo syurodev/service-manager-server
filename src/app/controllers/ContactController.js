@@ -147,7 +147,7 @@ class ContactController {
         currentPage = totalPages;
       }
 
-      const result = await contactSchema.find(query)
+      const result = await contactSchema.find(query, "name sdt email lienhechinh trangthai")
         .populate("chucvu", { name: 1 })
         .limit(limit)
         .sort(sort)
@@ -161,7 +161,7 @@ class ContactController {
       })
     } catch (error) {
       console.log(error)
-      res.status(500).json("Internal Server Error")
+      res.status(500).json("Internal Server Error", error)
     }
   }
 
