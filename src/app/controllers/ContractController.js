@@ -119,7 +119,7 @@ class ContractController {
         const formattedContract = {
           nhanvien: contract.nhanvien.hoten,
           khachhang: contract.khachhang.name,
-          loaihd: contract.loadhd.loaihd,
+          loaihd: contract.loaihd.loaihd,
           ngaybatdau: contract.ngaybatdau,
           ngayketthuc: contract.ngayketthuc,
           hinhthuctt: contract.hinhthuctt,
