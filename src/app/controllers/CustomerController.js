@@ -219,6 +219,9 @@ class CustomerController {
           return res.status(201).json({ message: "Tên loại khách hàng đã tồn tại" })
         }
 
+        const cacheKey = `customertypes`;
+        req.cache.del(cacheKey);
+
         result.name = name
 
         await result.save()
