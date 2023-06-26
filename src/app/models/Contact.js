@@ -10,6 +10,7 @@ const contactSchema = new Schema({
   lienhechinh: { type: Boolean, default: false },
   trangthai: { type: String, default: "Làm việc" },
   deleted: { type: Boolean, default: false },
+  createAt: { type: Date, default: Date.now },
   deleteAt: { type: Date },
   deleteBy: { type: mongoose.Schema.Types.ObjectId, ref: "Staff" },
   chucvu: { type: mongoose.Schema.Types.ObjectId, ref: "Position" },

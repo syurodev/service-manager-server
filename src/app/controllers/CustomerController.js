@@ -205,6 +205,35 @@ class CustomerController {
     }
   }
 
+  //[PATCH] /api/customer/type 
+  async editCustomerType(req, res) {
+    try {
+      const { _id, name } = req.body
+
+      const result = await customerTypeSchema.findById(_id)
+
+      if (result) {
+        const existingCustomerType = await customerTypeSchema.find({ name: { $regex: name, $options: "i" } })
+
+        if (existingCustomerType.length > 0) {
+          return res.status(201).json({ message: "Tên loại khách hàng đã tồn tại" })
+        }
+
+        result.name = name
+
+        await result.save()
+
+        res.status(201).json({ message: "Thay đổi loại khách hàng thành công" })
+      } else {
+        res.status(204).json({ message: "Không tìm thấy loại khách hàng" })
+      }
+
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error", error })
+    }
+  }
+
   //[GET] /api/customer/type
   async getCustomerTypes(req, res) {
     try {
