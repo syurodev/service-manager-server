@@ -19,7 +19,7 @@ class ContactController {
       }
 
       if (name?.trim() === "") {
-        return res.status(401).json({ message: "Tên người liên hệ là bắt buộc", name })
+        return res.status(201).json({ message: "Tên người liên hệ là bắt buộc", name })
       }
 
       const existingContact = await contactSchema.find({ name: { $regex: hoten, $options: "i" } })
