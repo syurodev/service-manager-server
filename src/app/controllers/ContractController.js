@@ -61,9 +61,8 @@ class ContractController {
         currentPage = totalPages;
       }
 
-      const contract = await contractSchema.find(query)
+      const contract = await contractSchema.find(query, "mahd giatrihd")
         .populate("nhanvien", "hoten")
-        .populate("doanhsotinhcho", "hoten")
         .populate("loaihd", "loaihd")
         .populate("khachhang", "name")
         .populate("donhang", "madh")
