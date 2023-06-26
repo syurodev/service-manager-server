@@ -20,9 +20,9 @@ class ContactController {
         return res.status(401).json({ message: "Tên người liên hệ là bắt buộc" })
       }
 
-      const existingContact = await contactSchema.findOne({ name: { $regex: name, $options: "i" } })
+      const existingContact = await contactSchema.find({ name: { $regex: name, $options: "i" } })
 
-      if (existingContact) {
+      if (existingContact.length > 0) {
         return res.status(201).json({
           message: "Người liên hệ này đã tồn tại",
           existingContact

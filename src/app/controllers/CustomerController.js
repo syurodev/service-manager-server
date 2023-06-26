@@ -8,7 +8,7 @@ class CustomerController {
   //[GET] /api/customer/
   async get(req, res) {
     try {
-      const { limit = 15, sort = "ngaytaokh", page = 1, q = "", loaikhachhang = null, tinh = null, phuong = null, xa = null, nhanvien = null, chucvundd = null, deleted = false } = req.query
+      const { limit = 15, sort = "ngaytaokh", page = 1, q = "", loaikhachhang = null, tinh = null, phuong = null, xa = null, nhanvien = null, deleted = false } = req.query
       const query = { deleted: deleted }
 
       if (q) {
@@ -29,9 +29,6 @@ class CustomerController {
       if (nhanvien) {
         query.nhanvien = { $regex: nhanvien }
       }
-      if (chucvundd) {
-        query.chucvundd = { $regex: chucvundd }
-      }
 
       const count = await customerSchema.countDocuments(query)
       const totalPages = Math.ceil(count / limit);
@@ -42,7 +39,7 @@ class CustomerController {
         currentPage = totalPages;
       }
 
-      const result = await customerSchema.find(query)
+      const result = await customerSchema.find(query, "name diachivp sdt email masothue ngaytaokh nguoidaidien sdtndd")
         .populate("tinh", { name: 1 })
         .populate("phuong", { name: 1 })
         .populate("xa", { name: 1 })
