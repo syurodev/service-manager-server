@@ -216,7 +216,11 @@ class CustomerController {
         const existingCustomerType = await customerTypeSchema.find({ name: { $regex: name, $options: "i" } })
 
         if (existingCustomerType.length > 0) {
-          return res.status(201).json({ message: "Tên loại khách hàng đã tồn tại" })
+          for (let i = 0; i < existingCustomerType.length; i++) {
+            const type = existingCustomerType[i]
+            if (type.name.toLocaleLowerCase() !== result.name && type.name.toLocaleLowerCase() === name)
+              return res.status(201).json({ message: "Tên loại khách hàng đã tồn tại" })
+          }
         }
 
         const cacheKey = `customertypes`;
