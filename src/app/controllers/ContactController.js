@@ -16,7 +16,7 @@ class ContactController {
         }
       }
 
-      if (!name.trim()) {
+      if (!name) {
         return res.status(401).json({ message: "Tên người liên hệ là bắt buộc" })
       }
 
