@@ -5,6 +5,7 @@ const customerController = require("../../app/controllers/CustomerController");
 
 router.post("/type", customerController.addCustomerType);
 router.get("/types", customerController.getCustomerTypes);
+router.patch("/type", customerController.editCustomerType);
 
 router.post("/create", customerController.create);
 router.patch("/change-info", customerController.changeInfo);
