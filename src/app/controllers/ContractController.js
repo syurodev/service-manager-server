@@ -37,7 +37,7 @@ class ContractController {
   //[GET] /api/contract/
   async get(req, res) {
     try {
-      const { limit = 15, sort = "ngaybatdau", page = 1, nhanvien = null, deleted = false, khachhang = null, loaihd = null } = req.query
+      const { limit = 15, sort = "createAt", page = 1, nhanvien = null, deleted = false, khachhang = null, loaihd = null } = req.query
       const query = { deleted: deleted }
 
       if (nhanvien) {

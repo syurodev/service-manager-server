@@ -12,6 +12,7 @@ const transactionSchema = new Schema({
   ketquagd: { type: String, default: "" },
   guiemail: { type: Boolean, default: false },
   tailieugiaodich: { type: String, default: "" },
+  createAt: { type: Date, default: Date.now },
   deleteAt: { type: Date },
   deleted: { type: Boolean, default: false },
   loaigd: { type: mongoose.Schema.Types.ObjectId, ref: "TransactionType" },

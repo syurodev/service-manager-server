@@ -9,6 +9,7 @@ const contactSchema = new Schema({
   gioitinh: { type: String },
   lienhechinh: { type: Boolean, default: false },
   trangthai: { type: String, default: "Làm việc" },
+  createAt: { type: Date, default: Date.now },
   deleted: { type: Boolean, default: false },
   createAt: { type: Date, default: Date.now },
   deleteAt: { type: Date },

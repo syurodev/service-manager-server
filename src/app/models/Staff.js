@@ -8,6 +8,7 @@ const staffSchema = new Schema({
   ngaysinh: { type: Date },
   ngayvaolam: { type: Date, default: Date.now },
   cccd: { type: Number, require: true },
+  createAt: { type: Date, default: Date.now },
   phongban: { type: String, default: "" },
   chucvu: { type: mongoose.Schema.Types.ObjectId, ref: "Position" },
   tinh: { type: mongoose.Schema.Types.ObjectId, ref: "Provinces" },

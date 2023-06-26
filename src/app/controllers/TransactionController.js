@@ -336,7 +336,7 @@ class TransactionController {
   //[GET] /api/transaction/
   async get(req, res) {
     try {
-      const { q = "", loaigd = null, trangthaigd = null, khachhang = null, nguoilienhe = null, nhanvien = null, deleted = false } = req.query
+      const { q = "", limit = 10, page = 1, sort = "createAt", loaigd = null, trangthaigd = null, khachhang = null, nguoilienhe = null, nhanvien = null, deleted = false } = req.query
 
       const query = { deleted: deleted }
 
@@ -364,15 +364,32 @@ class TransactionController {
         query.nhanvien = { $regex: nhanvien, $options: "i" }
       }
 
+      const count = await contractSchema.countDocuments(query)
+      const totalPages = Math.ceil(count / limit);
+      const skip = (page - 1) * limit;
+
+      let currentPage = page ? parseInt(page) : 1;
+      if (currentPage > totalPages) {
+        currentPage = totalPages;
+      }
+
       const result = await transactionSchema.find(query, "name danhgia")
         .populate("loaigd", "name")
         .populate("trangthaigd", "name")
         .populate("khachhang", "name")
         .populate("nhanvien", "hoten")
         .populate("nguoilienhe", "name")
+        .limit(limit)
+        .sort(sort)
+        .skip(skip)
 
       if (result.length > 0) {
-        res.status(201).json({ result })
+        res.status(201).json({
+          total: count,
+          currentPage: page,
+          totalPages,
+          transactions: result
+        })
       } else {
         res.status(201).json({ message: "Không có giao dịch" })
       }

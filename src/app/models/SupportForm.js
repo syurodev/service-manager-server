@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const supportFormTypeSchema = new Schema({
   title: { type: String, require: true },
   noidung: { type: String, require: true },
-  ngaytao: { type: Date, default: Date.now },
+  createAt: { type: Date, default: Date.now },
   khachhang: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
   nhanvien: { type: mongoose.Schema.Types.ObjectId, ref: "Staff" },
 });

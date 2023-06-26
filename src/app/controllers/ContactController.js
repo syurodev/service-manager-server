@@ -122,7 +122,7 @@ class ContactController {
   //[GET] /api/contact/get
   async get(req, res) {
     try {
-      const { limit = 10, sort = "name", page = 1, q = "", deleted = false, lienhechinh = false, trangthai = null, chucvu = null } = req.query
+      const { limit = 10, sort = "createAt", page = 1, q = "", deleted = false, lienhechinh = false, trangthai = null, chucvu = null } = req.query
       const query = { deleted: deleted }
 
       if (q) {

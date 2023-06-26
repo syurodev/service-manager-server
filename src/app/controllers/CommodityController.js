@@ -150,7 +150,7 @@ class CommodityController {
   //[GET] /api/commodity
   async commodities(req, res) {
     try {
-      const { limit = 10, sort = "giabanra", page = 1, q = "", loaihh = null, trangthai = null, dvt = null } = req.query
+      const { limit = 10, sort = "createAt", page = 1, q = "", loaihh = null, trangthai = null, dvt = null } = req.query
       let query = {}
 
       if (q) {

@@ -16,6 +16,7 @@ const contractSchema = new Schema({
   ghichu: { type: String, default: "" },
   guiemail: { type: Boolean, default: false },
   ghichuthuong: { type: String, default: "" },
+  createAt: { type: Date, default: Date.now },
   deleted: { type: Boolean, default: false },
   deleteAt: { type: Date, default: null },
   deleteBy: { type: mongoose.Schema.Types.ObjectId, ref: "Staff", default: null },

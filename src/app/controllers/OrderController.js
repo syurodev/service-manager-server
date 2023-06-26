@@ -54,7 +54,7 @@ class OrderController {
   //[GET] /api/order/
   async get(req, res) {
     try {
-      const { limit = 15, sort = "ngayketthuc", page = 1, nhanvien = null, deleted = false, khachhang = null } = req.query
+      const { limit = 15, sort = "createAt", page = 1, nhanvien = null, deleted = false, khachhang = null } = req.query
       const query = { deleted: deleted }
 
       if (nhanvien) {

@@ -13,6 +13,7 @@ const customerSchema = new Schema({
   thongtinkhac: { type: String, default: "" },
   stk: { type: Number, default: 0 },
   nguoidaidien: { type: String, default: "" },
+  createAt: { type: Date, default: Date.now },
   sdtndd: { type: Number, default: 0 },
   deleted: { type: Boolean, default: false },
   deleteAt: { type: Date },

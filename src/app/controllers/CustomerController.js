@@ -8,7 +8,7 @@ class CustomerController {
   //[GET] /api/customer/
   async get(req, res) {
     try {
-      const { limit = 15, sort = "ngaytaokh", page = 1, q = "", loaikhachhang = null, tinh = null, phuong = null, xa = null, nhanvien = null, deleted = false } = req.query
+      const { limit = 15, sort = "createAt", page = 1, q = "", loaikhachhang = null, tinh = null, phuong = null, xa = null, nhanvien = null, deleted = false } = req.query
       const query = { deleted: deleted }
 
       if (q) {

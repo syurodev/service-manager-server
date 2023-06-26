@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 const orderSchema = new Schema({
   madh: { type: String },
   ngaybatdau: { type: Date },
+  createAt: { type: Date, default: Date.now },
   ngayketthuc: { type: Date },
   deleted: { type: Boolean, default: false },
   deleteAt: { type: Date, default: null },
