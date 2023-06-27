@@ -118,6 +118,7 @@ class ContractController {
 
       if (contract) {
         const formattedContract = {
+          _id: contract._id,
           mahd: contract.mahd,
           tenhd: contract.tenhd,
           nhanvien: contract.nhanvien.hoten,
