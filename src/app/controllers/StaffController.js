@@ -9,9 +9,9 @@ class StaffController {
   // [GET] /api/staff/login
   async login(req, res) {
     try {
-      const { username, password } = req.query;
+      const { username = "", password = "" } = req.query;
 
-      if (username.trim() !== "" && password.trim() !== "") {
+      if (username !== "" && password !== "") {
         const result = await staffAccountSchema.findOne({ username: username, password: password });
 
         if (result) {
