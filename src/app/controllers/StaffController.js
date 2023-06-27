@@ -38,26 +38,33 @@ class StaffController {
     try {
       const { username, password, nhanvien, role } = req.body
       if (username && password && nhanvien && role) {
-        const existingAccount = await staffAccountSchema.findOne({ $or: [{ username: username }, { nhanvien: nhanvien }] });
+        const existingAccount = await staffAccountSchema.find({ $or: [{ username: username }, { nhanvien: nhanvien }] });
 
-        if (!existingAccount) {
-          const data = new staffAccountSchema({
-            username: username,
-            password: password,
-            role: role,
-            nhanvien: nhanvien
-          })
-          await data.save()
-          res.status(201).json({ message: "Tạo tài khoản thành công" });
-        } else {
-          res.status(201).json({ message: "Tên tài khoản đã tồn tại hoặc nhân viên đã có tài khoản" });
+        if (existingAccount.length > 0) {
+          for (let i = 0; i < existingAccount.length; i++) {
+            const account = existingAccount[i]
+            if (account.username.toLowerCase() === username.toLowerCase()) {
+              return res.status(201).json({ message: "Username đã tồn tại" })
+            }
+            if (account.nhanvien.toLowerCase() === nhanvien.toLowerCase()) {
+              return res.status(201).json({ message: "Nhân viên này đã có tài khoản" })
+            }
+          }
         }
+        const data = new staffAccountSchema({
+          username: username,
+          password: password,
+          role: role,
+          nhanvien: nhanvien
+        })
+        await data.save()
+        res.status(201).json({ message: "Tạo tài khoản thành công" });
       } else {
         res.status(401).json({ message: "Vui lòng nhập đầy đủ các trường" });
       }
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: "Internal Server Error" })
+      res.status(500).json({ error: "Internal Server Error", error })
     }
   }
 
