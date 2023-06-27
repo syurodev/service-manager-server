@@ -328,7 +328,7 @@ class StaffController {
       }
 
       if (mini) {
-        const result = await staffSchema.find({ hoten: { $regex: hoten, $options: "i" } }, "hoten")
+        const result = await staffSchema.find({ hoten: { $regex: q, $options: "i" } }, "hoten")
 
         res.status(201).json({
           staffs: result
