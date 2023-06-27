@@ -288,7 +288,7 @@ class StaffController {
   //[GET] /api/staff/
   async get(req, res) {
     try {
-      const { limit = 10, sort = "ngayvaolam", page = 1, q = "", chucvu = null, tinh = null, phuong = null, xa = null } = req.query
+      const { limit = 10, sort = "ngayvaolam", page = 1, q = "", chucvu = null, tinh = null, phuong = null, xa = null, mini = false } = req.query
       const query = {}
 
       if (q) {
@@ -320,21 +320,30 @@ class StaffController {
         currentPage = totalPages;
       }
 
-      const result = await staffSchema.find(query)
-        .populate("tinh", { name: 1 })
-        .populate("phuong", { name: 1 })
-        .populate("xa", { name: 1 })
-        .populate("chucvu", { name: 1 })
-        .limit(limit)
-        .sort(sort)
-        .skip(skip)
+      if (mini) {
+        const result = await staffSchema.find({ hoten: { $regex: hoten, $options: "i" } }, "hoten")
 
-      res.status(201).json({
-        total: count,
-        currentPage: page,
-        totalPages,
-        staffs: result
-      })
+        res.status(201).json({
+          staffs: result
+        })
+      } else {
+        const result = await staffSchema.find(query)
+          .populate("tinh", { name: 1 })
+          .populate("phuong", { name: 1 })
+          .populate("xa", { name: 1 })
+          .populate("chucvu", { name: 1 })
+          .limit(limit)
+          .sort(sort)
+          .skip(skip)
+
+        res.status(201).json({
+          total: count,
+          currentPage: page,
+          totalPages,
+          staffs: result
+        })
+      }
+
     } catch (error) {
       console.log(error)
       res.status(500).json({ error: "Internal Server Error" })
