@@ -98,7 +98,7 @@ class ContractController {
 
       const contract = await contractSchema.findById(_id)
         .populate("nhanvien", "hoten")
-        .populate("loadhd", "loaihd")
+        .populate("loaihd", "loaihd")
         .populate("khachhang", "name")
         .populate({
           path: 'donhang',
