@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 
 const contractSchema = new Schema({
   mahd: { type: String, require: true },
+  tenhd: { type: String, require: true },
   giatrihd: { type: Number, require: true },
   ngaybatdau: { type: Date, require: true },
   ngayketthuc: { type: Date, require: true },
