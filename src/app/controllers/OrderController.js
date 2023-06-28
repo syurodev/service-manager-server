@@ -271,12 +271,20 @@ class OrderController {
   async destroy(req, res) {
     try {
       const { _id } = req.query;
+      const order = await orderSchema.findById(_id);
+
+      if (!order) {
+        return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+      }
+
+      await orderItemSchema.deleteMany({ _id: { $in: order.items } });
+
       const result = await orderSchema.deleteOne({ _id });
 
       if (result.deletedCount === 1) {
         const cacheKey = `order${_id}`;
         req.cache.del(cacheKey);
-        res.status(204).json({ message: "Xoá đơn hàng thành công" });
+        res.status(201).json({ message: "Xoá đơn hàng thành công" });
       } else {
         res.status(404).json({ message: "Không tìm thấy đơn hàng" });
       }
