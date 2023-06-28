@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 
 const orderSchema = require("../models/Order")
 const orderItemSchema = require("../models/OrderItem")
-// const customerSchema = require("../models/Customer")
+const customerSchema = require("../models/Customer")
 const commoditySchema = require("../models/Commodity")
-// const mailer = require("../../utils/mailer")
+const mailer = require("../../utils/mailer")
 
 class OrderController {
   //[POST] /api/order/create
@@ -45,11 +45,11 @@ class OrderController {
         await commoditySchema.findByIdAndUpdate(hanghoa, { $inc: { soluongtrongkho: -soluong } });
       }
 
-      // const customer = await customerSchema.findById(khachhang, "email")
+      const customer = await customerSchema.findById(khachhang, "email")
 
-      // if (customer?.email) {
-      //   mailer.sendMail(customer.email, "Cảm ơn", "Cảm ơn")
-      // }
+      if (customer?.email) {
+        mailer.sendMail(customer.email, "Cảm ơn", "Cảm ơn")
+      }
 
       await order.save();
 

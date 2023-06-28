@@ -1,6 +1,9 @@
 const contractSchema = require("../models/Contract")
 const contractTypeSchema = require("../models/ContractType")
 const orderSchema = require("../models/Order")
+const customerSchema = require("../models/Customer")
+
+const scheduleReminder = require("../../utils/sendReminderEmail")
 
 class ContractController {
   //[POST] /api/contract/create
@@ -24,6 +27,15 @@ class ContractController {
         sotientt, ngaytt, soquy, xacnhan, ghichu, guiemail, ghichuthuong, loadhd, nhanvien,
         doanhsotinhcho, khachhang, donhang
       })
+
+      if (guiemail) {
+        const customerEmail = await customerSchema.findById(khachhang, "email")
+        if (customerEmail.email) {
+          scheduleReminder(newContractData)
+        } else {
+          return res.status(201).json({ message: "Vui lòng thêm email khách hàng trước khi kích hoạt cảnh báo hết hạn" })
+        }
+      }
 
       await newContractData.save()
       res.status(201).json({ message: "Tạo hợp đồng thành công", contract: newContractData })
