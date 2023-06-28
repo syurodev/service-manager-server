@@ -9,9 +9,9 @@ class StaffController {
   // [GET] /api/staff/login
   async login(req, res) {
     try {
-      const { username, password } = req.query;
+      const { username = "", password = "" } = req.query;
 
-      if (username.trim() !== "" && password.trim() !== "") {
+      if (username !== "" && password !== "") {
         const result = await staffAccountSchema.findOne({ username: username, password: password });
 
         if (result) {
@@ -38,26 +38,33 @@ class StaffController {
     try {
       const { username, password, nhanvien, role } = req.body
       if (username && password && nhanvien && role) {
-        const existingAccount = await staffAccountSchema.findOne({ $or: [{ username: username }, { nhanvien: nhanvien }] });
+        const existingAccount = await staffAccountSchema.find({ $or: [{ username: username }, { nhanvien: nhanvien }] });
 
-        if (!existingAccount) {
-          const data = new staffAccountSchema({
-            username: username,
-            password: password,
-            role: role,
-            nhanvien: nhanvien
-          })
-          await data.save()
-          res.status(201).json({ message: "Tạo tài khoản thành công" });
-        } else {
-          res.status(201).json({ message: "Tên tài khoản đã tồn tại hoặc nhân viên đã có tài khoản" });
+        if (existingAccount.length > 0) {
+          for (let i = 0; i < existingAccount.length; i++) {
+            const account = existingAccount[i]
+            if (account.username.toLowerCase() === username.toLowerCase()) {
+              return res.status(201).json({ message: "Username đã tồn tại" })
+            }
+            if (account.nhanvien.toLowerCase() === nhanvien.toLowerCase()) {
+              return res.status(201).json({ message: "Nhân viên này đã có tài khoản" })
+            }
+          }
         }
+        const data = new staffAccountSchema({
+          username: username,
+          password: password,
+          role: role,
+          nhanvien: nhanvien
+        })
+        await data.save()
+        res.status(201).json({ message: "Tạo tài khoản thành công" });
       } else {
         res.status(401).json({ message: "Vui lòng nhập đầy đủ các trường" });
       }
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: "Internal Server Error" })
+      res.status(500).json({ error: "Internal Server Error", error })
     }
   }
 
@@ -288,7 +295,7 @@ class StaffController {
   //[GET] /api/staff/
   async get(req, res) {
     try {
-      const { limit = 10, sort = "createAt", page = 1, q = "", chucvu = null, tinh = null, phuong = null, xa = null } = req.query
+      const { limit = 10, sort = "ngayvaolam", page = 1, q = "", chucvu = null, tinh = null, phuong = null, xa = null, mini = false } = req.query
       const query = {}
 
       if (q) {
@@ -320,21 +327,30 @@ class StaffController {
         currentPage = totalPages;
       }
 
-      const result = await staffSchema.find(query)
-        .populate("tinh", { name: 1 })
-        .populate("phuong", { name: 1 })
-        .populate("xa", { name: 1 })
-        .populate("chucvu", { name: 1 })
-        .limit(limit)
-        .sort(sort)
-        .skip(skip)
+      if (mini) {
+        const result = await staffSchema.find({ hoten: { $regex: q, $options: "i" } }, "hoten")
 
-      res.status(201).json({
-        total: count,
-        currentPage: page,
-        totalPages,
-        staffs: result
-      })
+        res.status(201).json({
+          staffs: result
+        })
+      } else {
+        const result = await staffSchema.find(query)
+          .populate("tinh", { name: 1 })
+          .populate("phuong", { name: 1 })
+          .populate("xa", { name: 1 })
+          .populate("chucvu", { name: 1 })
+          .limit(limit)
+          .sort(sort)
+          .skip(skip)
+
+        res.status(201).json({
+          total: count,
+          currentPage: page,
+          totalPages,
+          staffs: result
+        })
+      }
+
     } catch (error) {
       console.log(error)
       res.status(500).json({ error: "Internal Server Error" })

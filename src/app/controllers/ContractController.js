@@ -61,7 +61,7 @@ class ContractController {
         currentPage = totalPages;
       }
 
-      const contract = await contractSchema.find(query, "mahd giatrihd")
+      const contract = await contractSchema.find(query, "mahd tenhd giatrihd")
         .populate("nhanvien", "hoten")
         .populate("loaihd", "loaihd")
         .populate("khachhang", "name")
@@ -117,6 +117,9 @@ class ContractController {
 
       if (contract) {
         const formattedContract = {
+          _id: contract._id,
+          mahd: contract.mahd,
+          tenhd: contract.tenhd,
           nhanvien: contract.nhanvien.hoten,
           khachhang: contract.khachhang.name,
           loaihd: contract.loaihd.loaihd,
@@ -129,6 +132,7 @@ class ContractController {
           soquy: contract.soquy,
           ghichu: contract.ghichu,
           items: contract.donhang.items.map((item) => {
+            const _id = item.hanghoa._id;
             const giabanra = item.hanghoa.giabanra;
             const thue = item.hanghoa.thue;
             const soluong = item.soluong;
@@ -138,6 +142,7 @@ class ContractController {
             const giaTriHangHoa = (giabanra + giabanra * (thue / 100)) * soluong * (1 - chietkhau / 100);
 
             return {
+              _id,
               tenhh: item.hanghoa.name,
               giabanra,
               thue,
