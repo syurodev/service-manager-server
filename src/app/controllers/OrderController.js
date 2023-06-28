@@ -5,6 +5,7 @@ const orderItemSchema = require("../models/OrderItem")
 const customerSchema = require("../models/Customer")
 const commoditySchema = require("../models/Commodity")
 const mailer = require("../../utils/mailer")
+const generateOrderCode = require("../../utils/generateOrderCode")
 
 class OrderController {
   //[POST] /api/order/create
@@ -12,7 +13,10 @@ class OrderController {
     try {
       const { ngaybatdau, ngayketthuc, nhanvien, orderItems, khachhang } = req.body;
 
+      const madh = await generateOrderCode()
+
       const order = orderSchema({
+        madh,
         ngaybatdau,
         ngayketthuc,
         nhanvien,
@@ -45,10 +49,64 @@ class OrderController {
         await commoditySchema.findByIdAndUpdate(hanghoa, { $inc: { soluongtrongkho: -soluong } });
       }
 
-      const customer = await customerSchema.findById(khachhang, "email")
+      const customer = await customerSchema.findById(khachhang, "name email")
 
       if (customer?.email) {
-        mailer.sendMail(customer.email, "Cảm ơn", "Cảm ơn")
+        const itemsListPromises = orderItems.map(async (item) => {
+          const commodity = await commoditySchema.findById(item.hanghoa);
+          return `<li>Tên hàng hoá: ${commodity.name}, số lượng: ${item.soluong}</li>`;
+        });
+
+        const itemsList = await Promise.all(itemsListPromises);
+
+        mailer.sendMail(customer.email, "Cảm ơn bạn đã đặt hàng!", `
+        <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Cảm ơn bạn đã đặt hàng!</title>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+              }
+
+              .container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+              }
+
+              h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+              }
+
+              p {
+                font-size: 16px;
+                margin-bottom: 10px;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>Cảm ơn bạn đã đặt hàng!</h1>
+              <p>Xin chào ${customer.name},</p>
+              <p>Cảm ơn bạn đã đặt hàng của chúng tôi. Chúng tôi rất trân trọng sự tin tưởng và hỗ trợ của bạn.</p>
+              <p>Chi tiết đơn hàng của bạn:</p>
+              <p>Mã đơn hàng: ${order.madh}</p>
+              <p>Danh sách hàng hoá: </p>
+              <ul>
+                ${itemsList.join('')}
+              </ul>
+              <p>Chúng tôi sẽ xử lý đơn hàng của bạn càng sớm càng tốt. Nếu bạn có bất kỳ câu hỏi hoặc yêu cầu đặc biệt nào, vui lòng liên hệ với chúng tôi.</p>
+              <p>Xin cảm ơn một lần nữa!</p>
+              <p>Trân trọng,</p>
+              <p>Đội ngũ của chúng tôi</p>
+            </div>
+          </body>
+          </html>
+        `)
       }
 
       await order.save();
