@@ -2,6 +2,7 @@ const contractSchema = require("../models/Contract")
 const contractTypeSchema = require("../models/ContractType")
 const orderSchema = require("../models/Order")
 const customerSchema = require("../models/Customer")
+const generateCode = require("../../utils/generateCode")
 
 const scheduleReminder = require("../../utils/sendReminderEmail")
 
@@ -9,11 +10,13 @@ class ContractController {
   //[POST] /api/contract/create
   async create(req, res) {
     try {
-      const { tenhd,giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
+      const { tenhd, giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
         sotientt = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loadhd, nhanvien,
         doanhsotinhcho, khachhang, donhang } = req.body
 
+
       const existingContract = await contractSchema.find({ mahd: { $regex: mahd } })
+
 
       if (existingContract.length > 0) {
         return res.status(201).json({
@@ -22,7 +25,10 @@ class ContractController {
         })
       }
 
-      const newContractData = new contractSchema({tenhd,
+      const mahd = await generateCode({ type: "HD" })
+
+      const newContractData = new contractSchema({
+        tenhd,
         mahd, giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
         sotientt, ngaytt, soquy, xacnhan, ghichu, guiemail, ghichuthuong, loadhd, nhanvien,
         doanhsotinhcho, khachhang, donhang

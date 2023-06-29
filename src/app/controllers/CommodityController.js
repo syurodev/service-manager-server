@@ -1,30 +1,27 @@
 const commoditySchema = require("../models/Commodity")
 const commodityTypeSchema = require("../models/CommodityType")
 const commodityUnitSchema = require("../models/CommodityUnit")
+const generateCode = require("../../utils/generateCode")
 
 class CommodityController {
   //[POST] /api/commodity/create
   async create(req, res) {
     try {
-      const { mahh, name, image, gianhap, giabanra, mota, thue, trangthai, soluongtrongkho, dvt, loaihh } = req.body
+      const { name, image, gianhap, giabanra, mota, thue, trangthai, soluongtrongkho, dvt, loaihh } = req.body
 
-      const result = await commoditySchema.findOne({ mahh: mahh })
 
-      if (result) {
-        res.status(201).json({
-          message: "Mã hàng hoá này đã tồn tại"
-        })
-      } else {
-        const data = new commoditySchema({
-          mahh, name, image, gianhap, giabanra, mota, thue, trangthai, soluongtrongkho, dvt, loaihh
-        })
+      const mahh = await generateCode({ type: "HH" })
 
-        await data.save()
-        res.status(201).json({
-          message: "Thêm hàng hoá thành công",
-          data
-        })
-      }
+      const data = new commoditySchema({
+        mahh, name, image, gianhap, giabanra, mota, thue, trangthai, soluongtrongkho, dvt, loaihh
+      })
+
+      await data.save()
+      res.status(201).json({
+        message: "Thêm hàng hoá thành công",
+        data
+      })
+
 
     } catch (error) {
       console.log(error)

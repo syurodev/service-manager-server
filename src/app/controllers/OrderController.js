@@ -5,7 +5,7 @@ const orderItemSchema = require("../models/OrderItem")
 const customerSchema = require("../models/Customer")
 const commoditySchema = require("../models/Commodity")
 const mailer = require("../../utils/mailer")
-const generateOrderCode = require("../../utils/generateOrderCode")
+const generateCode = require("../../utils/generateCode")
 
 class OrderController {
   //[POST] /api/order/create
@@ -13,7 +13,7 @@ class OrderController {
     try {
       const { ngaybatdau, ngayketthuc, nhanvien, orderItems, khachhang } = req.body;
 
-      const madh = await generateOrderCode()
+      const madh = await generateCode({ type: "DH" })
 
       const order = orderSchema({
         madh,
