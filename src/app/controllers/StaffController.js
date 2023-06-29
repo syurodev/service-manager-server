@@ -44,10 +44,16 @@ class StaffController {
           for (let i = 0; i < existingAccount.length; i++) {
             const account = existingAccount[i]
             if (account.username.toLowerCase() === username.toLowerCase()) {
-              return res.status(201).json({ message: "Username đã tồn tại" })
+              return res.status(201).json({
+                status: false,
+                message: "Username đã tồn tại"
+              })
             }
             if (account.nhanvien === nhanvien) {
-              return res.status(201).json({ message: "Nhân viên này đã có tài khoản" })
+              return res.status(201).json({
+                status: false,
+                message: "Nhân viên này đã có tài khoản"
+              })
             }
           }
         }
@@ -58,9 +64,15 @@ class StaffController {
           nhanvien: nhanvien
         })
         await data.save()
-        res.status(201).json({ message: "Tạo tài khoản thành công" });
+        res.status(201).json({
+          status: true,
+          message: "Tạo tài khoản thành công"
+        });
       } else {
-        res.status(401).json({ message: "Vui lòng nhập đầy đủ các trường" });
+        res.status(401).json({
+          status: false,
+          message: "Vui lòng nhập đầy đủ các trường"
+        });
       }
     } catch (error) {
       console.log(error)
