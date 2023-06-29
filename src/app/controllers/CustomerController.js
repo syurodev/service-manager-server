@@ -8,12 +8,13 @@ class CustomerController {
   //[GET] /api/customer/
   async get(req, res) {
     try {
-      const { limit = 15, sort = "createAt", page = 1, q = "", loaikhachhang = null, tinh = null, phuong = null, xa = null, nhanvien = null, deleted = false } = req.query
+      const { limit = 15, sort = "createAt", page = 1, q = "", loaikhachhang = null, tinh = null, phuong = null, xa = null, nhanvien = null, deleted = false, mini = false } = req.query
       const query = { deleted: deleted }
 
       if (q) {
         query.name = { $regex: q, $options: "i" }
       }
+
       if (loaikhachhang) {
         query.loaikhachhang = { $regex: loaikhachhang }
       }
@@ -30,33 +31,40 @@ class CustomerController {
         query.nhanvien = { $regex: nhanvien }
       }
 
-      const count = await customerSchema.countDocuments(query)
-      const totalPages = Math.ceil(count / limit);
-      const skip = (page - 1) * limit;
+      if (mini) {
+        const result = await customerSchema.find(query, "name")
+        res.status(201).json({
+          data: result
+        })
+      } else {
+        const count = await customerSchema.countDocuments(query)
+        const totalPages = Math.ceil(count / limit);
+        const skip = (page - 1) * limit;
 
-      let currentPage = page ? parseInt(page) : 1;
-      if (currentPage > totalPages) {
-        currentPage = totalPages;
+        let currentPage = page ? parseInt(page) : 1;
+        if (currentPage > totalPages) {
+          currentPage = totalPages;
+        }
+
+        const result = await customerSchema.find(query, "name diachivp sdt email masothue ngaytaokh nguoidaidien sdtndd")
+          .populate("tinh", { name: 1 })
+          .populate("phuong", { name: 1 })
+          .populate("xa", { name: 1 })
+          .populate("loaikhachhang", { name: 1 })
+          .populate("chucvundd", { name: 1 })
+          .populate("nhanvien", { hoten: 1 })
+          .populate("nguoilienhe", { name: 1 })
+          .limit(limit)
+          .sort(sort)
+          .skip(skip)
+
+        res.status(201).json({
+          total: count,
+          currentPage: page,
+          totalPages,
+          data: result
+        })
       }
-
-      const result = await customerSchema.find(query, "name diachivp sdt email masothue ngaytaokh nguoidaidien sdtndd")
-        .populate("tinh", { name: 1 })
-        .populate("phuong", { name: 1 })
-        .populate("xa", { name: 1 })
-        .populate("loaikhachhang", { name: 1 })
-        .populate("chucvundd", { name: 1 })
-        .populate("nhanvien", { hoten: 1 })
-        .populate("nguoilienhe", { name: 1 })
-        .limit(limit)
-        .sort(sort)
-        .skip(skip)
-
-      res.status(201).json({
-        total: count,
-        currentPage: page,
-        totalPages,
-        data: result
-      })
     } catch (error) {
       console.log(error)
       res.status(500).json({ error: "Internal Server Error" })

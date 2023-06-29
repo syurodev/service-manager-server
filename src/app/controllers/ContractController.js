@@ -143,7 +143,7 @@ class ContractController {
           ngaytt: contract.ngaytt,
           soquy: contract.soquy,
           ghichu: contract.ghichu,
-          items: contract.donhang.items.map((item) => {
+          items: contract.donhang?.items.map((item) => {
             const _id = item.hanghoa._id;
             const giabanra = item.hanghoa.giabanra;
             const thue = item.hanghoa.thue;
@@ -179,7 +179,7 @@ class ContractController {
       }
     } catch (error) {
       console.log(error)
-      res.status(500).json({ error: "Internal Server Error" })
+      res.status(500).json({ error: "Internal Server Error", error })
     }
   }
 
