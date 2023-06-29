@@ -200,21 +200,40 @@ class OrderController {
           populate: {
             path: 'hanghoa',
             model: 'Commodity',
-            select: 'name'
+            select: 'name giabanra thue'
           },
           select: 'soluong chietkhau'
         });
 
       if (order) {
         const formattedOrder = {
-          nhanvien: order.nhanvien.hoten,
-          khachhang: order.khachhang.name,
-          items: order.items.map((item) => ({
-            tenhh: item.hanghoa.name,
-            soluong: item.soluong,
-            chietkhau: item.chietkhau
-          }))
+          nhanvien: {
+            _id: order.nhanvien._id,
+            hoten: order.nhanvien.hoten
+          },
+          khachhang: {
+            _id: order.khachhang._id,
+            name: order.khachhang.name,
+          },
+          items: order.items.map((item) => {
+            const tongtien = (item.hanghoa.giabanra + item.hanghoa.thue) * item.soluong * (1 - item.chietkhau);
+            return {
+              _id: item._id,
+              tenhh: item.hanghoa.name,
+              giabanra: item.hanghoa.giabanra,
+              thue: item.hanghoa.thue,
+              soluong: item.soluong,
+              chietkhau: item.chietkhau,
+              tongtien: tongtien
+            };
+          })
         };
+
+        const totalAmount = formattedOrder.items.reduce((total, item) => {
+          return total + item.tongtien;
+        }, 0);
+
+        formattedOrder.thanhtien = totalAmount;
 
         req.cache.set(cacheKey, formattedOrder);
         res.status(201).json({ order: formattedOrder })

@@ -9,7 +9,7 @@ class ContractController {
   //[POST] /api/contract/create
   async create(req, res) {
     try {
-      const { mahd, giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
+      const { tenhd,giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
         sotientt = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loadhd, nhanvien,
         doanhsotinhcho, khachhang, donhang } = req.body
 
@@ -22,7 +22,7 @@ class ContractController {
         })
       }
 
-      const newContractData = new contractSchema({
+      const newContractData = new contractSchema({tenhd,
         mahd, giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
         sotientt, ngaytt, soquy, xacnhan, ghichu, guiemail, ghichuthuong, loadhd, nhanvien,
         doanhsotinhcho, khachhang, donhang
