@@ -11,6 +11,7 @@ const contractSchema = new Schema({
   hinhthuctt: { type: String, default: "Trả trước" },
   loaitt: { type: String, default: "Tiền mặt" },
   sotientt: { type: Number },
+  sotienconthieu: { type: Number },
   ngaytt: { type: Date },
   soquy: { type: Number },
   xacnhan: { type: Boolean, default: false },

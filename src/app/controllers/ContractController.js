@@ -11,7 +11,7 @@ class ContractController {
   async create(req, res) {
     try {
       const { tenhd, giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
-        sotientt = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loadhd, nhanvien,
+        sotientt = 0, sotienconthieu = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loadhd, nhanvien,
         doanhsotinhcho, khachhang, donhang } = req.body
 
 
@@ -30,7 +30,7 @@ class ContractController {
       const newContractData = new contractSchema({
         tenhd,
         mahd, giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
-        sotientt, ngaytt, soquy, xacnhan, ghichu, guiemail, ghichuthuong, loadhd, nhanvien,
+        sotientt, ngaytt, soquy, xacnhan, ghichu, sotienconthieu, guiemail, ghichuthuong, loadhd, nhanvien,
         doanhsotinhcho, khachhang, donhang
       })
 
@@ -248,7 +248,7 @@ class ContractController {
   async changeInfo(req, res) {
     try {
       const { _id, mahd, giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
-        sotientt = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loadhd, nhanvien,
+        sotientt = 0, sotienconthieu = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loadhd, nhanvien,
         doanhsotinhcho, khachhang, donhang } = req.body
 
       const contract = await contractSchema.findById(_id)
@@ -268,6 +268,7 @@ class ContractController {
         contract.hinhthuctt = hinhthuctt || contract.hinhthuctt
         contract.loaitt = loaitt || contract.loaitt
         contract.sotientt = sotientt || contract.sotientt
+        contract.sotienconthieu = sotienconthieu || contract.sotienconthieu
         contract.ngaytt = ngaytt || contract.ngaytt
         contract.soquy = soquy || contract.soquy
         contract.xacnhan = xacnhan || contract.xacnhan
