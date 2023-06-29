@@ -15,11 +15,16 @@ class StaffController {
         const result = await staffAccountSchema.findOne({ username: username, password: password });
 
         if (result) {
-          const staff = await staffSchema.findById(result.nhanvien, "hoten role");
+          const staffLogin = await staffSchema.findById(result.nhanvien, "hoten");
+          const data = {
+            _id: staffLogin._id,
+            hoten: staffLogin.hoten,
+            role: result.role
+          }
           if (staff) {
             res.status(200).json({
               status: true,
-              staff
+              staff: data
             });
           } else {
             res.status(404).json({ message: "Không tìm thấy thông tin nhân viên" });
@@ -39,44 +44,52 @@ class StaffController {
   // [POST] /api/staff/signin
   async signin(req, res) {
     try {
-      const { username, password, nhanvien, role } = req.body
-      if (username && password && nhanvien && role) {
-        const existingAccount = await staffAccountSchema.find({ $or: [{ username: { $regex: username, $options: "i" } }, { nhanvien: nhanvien }] });
+      const { chucvu, username, password, nhanvien, role } = req.body
+      if (chucvu === "Nhân viên") {
+        return res.status(201).json({
+          status: false,
+          message: "Bạn không có quyền tạo tài khoản"
+        })
+      } else {
+        if (username && password && nhanvien && role) {
+          const existingAccount = await staffAccountSchema.find({ $or: [{ username: { $regex: username, $options: "i" } }, { nhanvien: nhanvien }] });
 
-        if (existingAccount.length > 0) {
-          for (let i = 0; i < existingAccount.length; i++) {
-            const account = existingAccount[i]
-            if (account.username.toLowerCase() === username.toLowerCase()) {
-              return res.status(201).json({
-                status: false,
-                message: "Username đã tồn tại"
-              })
-            }
-            if (account.nhanvien.toString() === nhanvien.toString()) {
-              return res.status(201).json({
-                status: false,
-                message: "Nhân viên này đã có tài khoản"
-              })
+          if (existingAccount.length > 0) {
+            for (let i = 0; i < existingAccount.length; i++) {
+              const account = existingAccount[i]
+              if (account.username.toLowerCase() === username.toLowerCase()) {
+                return res.status(201).json({
+                  status: false,
+                  message: "Username đã tồn tại"
+                })
+              }
+              if (account.nhanvien.toString() === nhanvien.toString()) {
+                return res.status(201).json({
+                  status: false,
+                  message: "Nhân viên này đã có tài khoản"
+                })
+              }
             }
           }
+          const data = new staffAccountSchema({
+            username: username,
+            password: password,
+            role: role,
+            nhanvien: nhanvien
+          })
+          await data.save()
+          res.status(201).json({
+            status: true,
+            message: "Tạo tài khoản thành công"
+          });
+        } else {
+          res.status(201).json({
+            status: false,
+            message: "Vui lòng nhập đầy đủ các trường"
+          });
         }
-        const data = new staffAccountSchema({
-          username: username,
-          password: password,
-          role: role,
-          nhanvien: nhanvien
-        })
-        await data.save()
-        res.status(201).json({
-          status: true,
-          message: "Tạo tài khoản thành công"
-        });
-      } else {
-        res.status(201).json({
-          status: false,
-          message: "Vui lòng nhập đầy đủ các trường"
-        });
       }
+
     } catch (error) {
       console.log(error)
       res.status(500).json({ error: "Internal Server Error", error })
