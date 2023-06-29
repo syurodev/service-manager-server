@@ -21,7 +21,7 @@ class StaffController {
             hoten: staffLogin.hoten,
             role: result.role
           }
-          if (staff) {
+          if (staffLogin) {
             res.status(200).json({
               status: true,
               staff: data
