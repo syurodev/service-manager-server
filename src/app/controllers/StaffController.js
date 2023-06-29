@@ -38,7 +38,7 @@ class StaffController {
     try {
       const { username, password, nhanvien, role } = req.body
       if (username && password && nhanvien && role) {
-        const existingAccount = await staffAccountSchema.find({ $or: [{ username: { $regex: username, $options: "i" } }, { nhanvien: { $regex: nhanvien } }] });
+        const existingAccount = await staffAccountSchema.find({ $or: [{ username: { $regex: username, $options: "i" } }, { nhanvien: nhanvien }] });
 
         if (existingAccount.length > 0) {
           for (let i = 0; i < existingAccount.length; i++) {
@@ -49,7 +49,7 @@ class StaffController {
                 message: "Username đã tồn tại"
               })
             }
-            if (account.nhanvien === nhanvien) {
+            if (account.nhanvien.toString() === nhanvien.toString()) {
               return res.status(201).json({
                 status: false,
                 message: "Nhân viên này đã có tài khoản"
