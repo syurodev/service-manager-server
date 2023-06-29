@@ -364,7 +364,7 @@ class TransactionController {
         query.nhanvien = { $regex: nhanvien, $options: "i" }
       }
 
-      const count = await contractSchema.countDocuments(query)
+      const count = await transactionSchema.countDocuments(query)
       const totalPages = Math.ceil(count / limit);
       const skip = (page - 1) * limit;
 

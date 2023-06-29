@@ -21,6 +21,7 @@ class StaffController {
             hoten: staffLogin.hoten,
             role: result.role
           }
+
           if (staffLogin) {
             res.status(200).json({
               status: true,
@@ -45,6 +46,7 @@ class StaffController {
   async signin(req, res) {
     try {
       const { chucvu, username, password, nhanvien, role } = req.body
+      console.log(chucvu)
       if (chucvu === "Nhân viên") {
         return res.status(201).json({
           status: false,
