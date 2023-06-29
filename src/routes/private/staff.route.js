@@ -5,6 +5,7 @@ const staffController = require("../../app/controllers/StaffController");
 
 router.get("/login", staffController.login);
 router.post("/signin", staffController.signin);
+router.get("/accounts", staffController.accounts);
 router.get("/profile/:id", staffController.profile);
 router.post("/create", staffController.create);
 router.patch("/change-password", staffController.changePassword);

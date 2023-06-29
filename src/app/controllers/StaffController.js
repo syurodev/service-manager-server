@@ -80,6 +80,37 @@ class StaffController {
     }
   }
 
+  // [GET] /api/staff/staff-account
+  async accounts(req, res) {
+    try {
+      const { limit = 15, sort = "createAt", page = 1 } = req.query
+
+      const count = await staffAccountSchema.countDocuments()
+      const totalPages = Math.ceil(count / limit);
+      const skip = (page - 1) * limit;
+
+      let currentPage = page ? parseInt(page) : 1;
+      if (currentPage > totalPages) {
+        currentPage = totalPages;
+      }
+      const accounts = await staffAccountSchema.find({}, "username createAt role")
+        .populate("nhanvien", "hoten")
+        .limit(limit)
+        .sort(sort)
+        .skip(skip)
+
+      res.status(201).json({
+        total: count,
+        currentPage: page,
+        totalPages,
+        accounts
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
   //[POST] /api/staff/create
   async create(req, res) {
     try {
