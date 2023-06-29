@@ -69,7 +69,7 @@ class StaffController {
           message: "Tạo tài khoản thành công"
         });
       } else {
-        res.status(401).json({
+        res.status(201).json({
           status: false,
           message: "Vui lòng nhập đầy đủ các trường"
         });
