@@ -15,7 +15,7 @@ class StaffController {
         const result = await staffAccountSchema.findOne({ username: username, password: password });
 
         if (result) {
-          const staff = await staffSchema.findById(result.nhanvien, "hoten");
+          const staff = await staffSchema.findById(result.nhanvien, "hoten role");
           if (staff) {
             res.status(200).json({
               status: true,
