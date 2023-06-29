@@ -17,7 +17,10 @@ class StaffController {
         if (result) {
           const staff = await staffSchema.findById(result.nhanvien, "hoten");
           if (staff) {
-            res.status(200).json(staff);
+            res.status(200).json({
+              status: true,
+              staff
+            });
           } else {
             res.status(404).json({ message: "Không tìm thấy thông tin nhân viên" });
           }
