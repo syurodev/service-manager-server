@@ -46,7 +46,7 @@ class StaffController {
             if (account.username.toLowerCase() === username.toLowerCase()) {
               return res.status(201).json({ message: "Username đã tồn tại" })
             }
-            if (account.nhanvien.toLowerCase() === nhanvien.toLowerCase()) {
+            if (account.nhanvien === nhanvien) {
               return res.status(201).json({ message: "Nhân viên này đã có tài khoản" })
             }
           }
