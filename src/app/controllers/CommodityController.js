@@ -69,7 +69,7 @@ class CommodityController {
           message: "Loại hàng hoá đã tồn tại"
         })
       } else {
-        const cacheKey = "commodityunits";
+        const cacheKey = "commoditytypes";
         req.cache.del(cacheKey);
 
         const data = new commodityTypeSchema({
