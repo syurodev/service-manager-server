@@ -340,28 +340,29 @@ class TransactionController {
 
       const query = { deleted: deleted }
 
-      if (q) {
+      if (q !== "") {
         query.name = { $regex: q, $options: "i" }
       }
 
-      if (loaigd) {
-        query.loaigd = { $regex: loaigd, $options: "i" }
+      if (loaigd !== null) {
+        query.loaigd = loaigd
       }
 
-      if (trangthaigd) {
-        query.trangthaigd = { $regex: trangthaigd, $options: "i" }
+      if (trangthaigd !== null) {
+        query.trangthaigd = trangthaigd
       }
 
-      if (khachhang) {
-        query.khachhang = { $regex: khachhang, $options: "i" }
+      if (khachhang !== null) {
+        query.khachhang = khachhang
       }
 
-      if (nguoilienhe) {
-        query.nguoilienhe = { $regex: nguoilienhe, $options: "i" }
+      if (nguoilienhe !== null) {
+        console.log("first")
+        query.nguoilienhe = nguoilienhe
       }
 
-      if (nhanvien) {
-        query.nhanvien = { $regex: nhanvien, $options: "i" }
+      if (nhanvien !== null) {
+        query.nhanvien = nhanvien
       }
 
       const count = await transactionSchema.countDocuments(query)
