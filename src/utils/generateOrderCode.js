@@ -19,8 +19,13 @@ async function generateOrderCode() {
 
 function generateUniqueCode() {
   const timestamp = Date.now();
+  const day = timestamp.getUTCDate();
+  const month = timestamp.getUTCMonth() + 1;
+  const year = timestamp.getUTCFullYear();
+  const formattedString = `${day}-${month}-${year}`;
+
   const randomDigits = Math.floor(Math.random() * 10000);
-  const orderCode = `DH-${timestamp}-${randomDigits}`;
+  const orderCode = `DH-${formattedString}-${randomDigits}`;
   return orderCode;
 }
 

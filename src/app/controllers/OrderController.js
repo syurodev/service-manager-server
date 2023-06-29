@@ -121,8 +121,13 @@ class OrderController {
   //[GET] /api/order/
   async get(req, res) {
     try {
-      const { limit = 15, sort = "createAt", page = 1, nhanvien = null, deleted = false, khachhang = null } = req.query
+      const { limit = 15, sort = "createAt", page = 1, nhanvien = null, deleted = false, khachhang = null, mini = false, q = "" } = req.query
       const query = { deleted: deleted }
+
+
+      if (q) {
+        query.madh = { $regex: q }
+      }
 
       if (nhanvien) {
         query.nhanvien = { $regex: nhanvien }
@@ -132,35 +137,42 @@ class OrderController {
         query.khachhang = { $regex: khachhang }
       }
 
-      const count = await orderSchema.countDocuments(query)
-      const totalPages = Math.ceil(count / limit);
-      const skip = (page - 1) * limit;
+      if (mini) {
+        const orders = await orderSchema.find(query, "madh")
+        res.status(201).json({
+          orders
+        })
+      } else {
+        const count = await orderSchema.countDocuments(query)
+        const totalPages = Math.ceil(count / limit);
+        const skip = (page - 1) * limit;
 
-      let currentPage = page ? parseInt(page) : 1;
-      if (currentPage > totalPages) {
-        currentPage = totalPages;
+        let currentPage = page ? parseInt(page) : 1;
+        if (currentPage > totalPages) {
+          currentPage = totalPages;
+        }
+
+        const orders = await orderSchema.find(query, "ngaybatdau ngayketthuc items")
+          .populate("nhanvien", "hoten")
+          .limit(limit)
+          .sort(sort)
+          .skip(skip)
+
+        const modifiedOrders = orders.map((order) => ({
+          _id: order._id,
+          ngaybatdau: order.ngaybatdau,
+          ngayketthuc: order.ngayketthuc,
+          nhanvien: order.nhanvien,
+          orderItemCount: order.items.length,
+        }));
+
+        res.status(201).json({
+          total: count,
+          currentPage: page,
+          totalPages,
+          orders: modifiedOrders
+        })
       }
-
-      const orders = await orderSchema.find(query, "ngaybatdau ngayketthuc items")
-        .populate("nhanvien", "hoten")
-        .limit(limit)
-        .sort(sort)
-        .skip(skip)
-
-      const modifiedOrders = orders.map((order) => ({
-        _id: order._id,
-        ngaybatdau: order.ngaybatdau,
-        ngayketthuc: order.ngayketthuc,
-        nhanvien: order.nhanvien,
-        orderItemCount: order.items.length,
-      }));
-
-      res.status(201).json({
-        total: count,
-        currentPage: page,
-        totalPages,
-        orders: modifiedOrders
-      })
 
     } catch (error) {
       console.log(error)
