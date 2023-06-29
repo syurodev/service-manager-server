@@ -126,7 +126,7 @@ class CommodityController {
       if (result) {
         res.status(201).json({ message: "Đơn vị tính đã tồn tại" })
       } else {
-        const cacheKey = "commoditytypes";
+        const cacheKey = "commodityunits";
         req.cache.del(cacheKey);
 
         const data = new commodityUnitSchema({
