@@ -38,7 +38,7 @@ class StaffController {
     try {
       const { username, password, nhanvien, role } = req.body
       if (username && password && nhanvien && role) {
-        const existingAccount = await staffAccountSchema.find({ $or: [{ username: username }, { nhanvien: nhanvien }] });
+        const existingAccount = await staffAccountSchema.find({ $or: [{ username: { $regex: username, $options: "i" } }, { nhanvien: { $regex: nhanvien } }] });
 
         if (existingAccount.length > 0) {
           for (let i = 0; i < existingAccount.length; i++) {
