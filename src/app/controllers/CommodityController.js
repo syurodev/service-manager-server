@@ -9,7 +9,6 @@ class CommodityController {
     try {
       const { name, image, gianhap, giabanra, mota, thue, trangthai, soluongtrongkho, dvt, loaihh } = req.body
 
-
       const mahh = await generateCode({ type: "HH" })
 
       const data = new commoditySchema({

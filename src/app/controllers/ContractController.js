@@ -293,11 +293,16 @@ class ContractController {
           ngaybatdau: contract.ngaybatdau,
           ngayketthuc: contract.ngayketthuc,
           hinhthuctt: contract.hinhthuctt,
+          canhbaohh: contract.canhbaohh,
           loaitt: contract.loaitt,
           sotientt: contract.sotientt,
+          sotienconthieu: contract.sotienconthieu,
+          xacnhan: contract.xacnhan,
+          guiemail: contract.guiemail,
           ngaytt: contract.ngaytt,
           soquy: contract.soquy,
           ghichu: contract.ghichu,
+          ghichuthuong: contract.ghichuthuong,
           items: contract.donhang?.items.map((item) => {
             const _id = item.hanghoa._id;
             const giabanra = item.hanghoa.giabanra;
