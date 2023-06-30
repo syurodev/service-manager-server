@@ -41,8 +41,8 @@ async function generateCode({ type }) {
 function generateUniqueCode(type) {
   const timestamp = Date.now();
   const date = new Date(timestamp);
-  const day = String(dateObj.getUTCDate()).padStart(2, "0");
-  const month = String(dateObj.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
   const year = date.getUTCFullYear();
   const formattedString = `${year}-${month}-${day}`;
 
