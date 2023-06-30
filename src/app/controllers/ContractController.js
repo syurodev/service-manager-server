@@ -56,6 +56,13 @@ class ContractController {
             })
           }
         }
+
+        if (checkOrder) {
+          return res.status(201).json({
+            status: false,
+            message: "Đơn hàng đã có hợp đồng"
+          })
+        }
       }
 
       const mahd = await generateCode({ type: "HD" })
