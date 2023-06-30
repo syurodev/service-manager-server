@@ -289,7 +289,10 @@ class ContractController {
           tenhd: contract.tenhd,
           nhanvien: contract.nhanvien.hoten,
           khachhang: contract.khachhang.name,
-          loaihd: contract.loaihd.loaihd,
+          loaihd: {
+            loaihd: contract.loaihd.loaihd,
+            _id: contract.loaihd._id
+          },
           ngaybatdau: contract.ngaybatdau,
           ngayketthuc: contract.ngayketthuc,
           hinhthuctt: contract.hinhthuctt,
