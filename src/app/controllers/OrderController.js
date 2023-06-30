@@ -4,6 +4,8 @@ const orderSchema = require("../models/Order")
 const orderItemSchema = require("../models/OrderItem")
 const customerSchema = require("../models/Customer")
 const commoditySchema = require("../models/Commodity")
+const contractSchema = require("../models/Contract")
+
 const mailer = require("../../utils/mailer")
 const generateCode = require("../../utils/generateCode")
 
@@ -142,7 +144,16 @@ class OrderController {
       }
 
       if (mini) {
-        const orders = await orderSchema.find(query, "madh")
+        const existingOrders = await contractSchema.find({}, "donhang")
+        const existingOrderIds = existingOrders.map(order => order.donhang);
+
+        if (existingOrderIds) {
+          query._id = { $nin: existingOrderIds }
+        }
+
+        console.log(existingOrders)
+        const orders = await orderSchema.find(query, "madh");
+
         res.status(201).json({
           orders
         })

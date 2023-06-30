@@ -39,24 +39,13 @@ class ContractController {
         const checkOrder = await orderSchema.findById(donhang)
 
         if (checkOrder) {
-          if (checkOrder.toString() !== nhanvien.toString()) {
+          if (checkOrder.nhanvien.toString() !== nhanvien.toString()) {
             return res.status(201).json({
               status: false,
               message: "Bạn không có quyền tạo hợp đồng với đơn hàng này"
             })
           }
         }
-      }
-
-
-      const existingContract = await contractSchema.find({ mahd: { $regex: mahd } })
-
-
-      if (existingContract.length > 0) {
-        return res.status(201).json({
-          status: false,
-          message: "Mã hợp đồng đã tồn tại",
-        })
       }
 
       const mahd = await generateCode({ type: "HD" })

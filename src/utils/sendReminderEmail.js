@@ -41,4 +41,4 @@ const scheduleReminder = (contract) => {
   console.log('Công việc gửi email nhắc nhở đã được lên lịch');
 };
 
-module.exports = { scheduleReminder };
+module.exports = scheduleReminder
