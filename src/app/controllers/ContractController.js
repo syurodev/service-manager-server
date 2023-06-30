@@ -14,7 +14,7 @@ class ContractController {
   async create(req, res) {
     try {
       const { tenhd = "", giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
-        sotientt = 0, sotienconthieu = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loadhd, nhanvien,
+        sotientt = 0, sotienconthieu = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loaihd, nhanvien,
         doanhsotinhcho, khachhang, donhang } = req.body
 
       if (tenhd === "") {
@@ -38,6 +38,13 @@ class ContractController {
         })
       }
 
+      if (loaihd === "") {
+        return res.status(201).json({
+          status: false,
+          message: "Vui lòng chọn loại hợp đồng"
+        })
+      }
+
       if (donhang) {
         const checkOrder = await orderSchema.findById(donhang)
 
@@ -56,7 +63,7 @@ class ContractController {
       const newContractData = new contractSchema({
         tenhd,
         mahd, giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
-        sotientt, ngaytt, soquy, xacnhan, ghichu, sotienconthieu, guiemail, ghichuthuong, loadhd, nhanvien,
+        sotientt, ngaytt, soquy, xacnhan, ghichu, sotienconthieu, guiemail, ghichuthuong, loaihd, nhanvien,
         doanhsotinhcho, khachhang, donhang
       })
 
@@ -201,15 +208,15 @@ class ContractController {
       const query = { deleted: deleted }
 
       if (nhanvien) {
-        query.nhanvien = { $regex: nhanvien }
+        query.nhanvien = nhanvien
       }
 
       if (khachhang) {
-        query.khachhang = { $regex: khachhang }
+        query.khachhang = khachhang
       }
 
       if (loaihd) {
-        query.loaihd = { $regex: loaihd }
+        query.loaihd = loaihd
       }
 
       const count = await contractSchema.countDocuments(query)
@@ -390,7 +397,7 @@ class ContractController {
   async changeInfo(req, res) {
     try {
       const { _id, mahd, giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
-        sotientt = 0, sotienconthieu = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loadhd, nhanvien,
+        sotientt = 0, sotienconthieu = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loaihd, nhanvien,
         doanhsotinhcho, khachhang, donhang } = req.body
 
       const contract = await contractSchema.findById(_id)
@@ -417,7 +424,7 @@ class ContractController {
         contract.ghichu = ghichu || contract.ghichu
         contract.guiemail = guiemail || contract.guiemail
         contract.ghichuthuong = ghichuthuong || contract.ghichuthuong
-        contract.loadhd = loadhd || contract.loadhd
+        contract.loaihd = loaihd || contract.loaihd
         contract.nhanvien = nhanvien || contract.nhanvien
         contract.doanhsotinhcho = doanhsotinhcho || contract.doanhsotinhcho
         contract.khachhang = khachhang || contract.khachhang
