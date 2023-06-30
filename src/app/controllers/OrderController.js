@@ -186,12 +186,14 @@ class OrderController {
       const _id = req.params.id
 
       const cacheKey = `order${_id}`;
+      req.cache.del(cacheKey);
 
-      const cachedData = req.cache.get(cacheKey);
 
-      if (cachedData) {
-        return res.status(201).json(cachedData);
-      }
+      // const cachedData = req.cache.get(cacheKey);
+
+      // if (cachedData) {
+      //   return res.status(201).json(cachedData);
+      // }
 
       const order = await orderSchema.findById(_id)
         .populate("nhanvien", "hoten")
@@ -236,7 +238,7 @@ class OrderController {
 
         formattedOrder.thanhtien = totalAmount;
 
-        req.cache.set(cacheKey, formattedOrder);
+        //req.cache.set(cacheKey, formattedOrder);
         res.status(201).json({ order: formattedOrder })
       } else {
         res.status(404).json({ message: "Không tìm thấy đơn hàng" })
