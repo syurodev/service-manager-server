@@ -151,7 +151,6 @@ class OrderController {
           query._id = { $nin: existingOrderIds }
         }
 
-        console.log(existingOrders)
         const orders = await orderSchema.find(query, "madh");
 
         res.status(201).json({
