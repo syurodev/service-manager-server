@@ -121,12 +121,16 @@ class OrderController {
   //[GET] /api/order/
   async get(req, res) {
     try {
-      const { limit = 15, sort = "createAt", page = 1, nhanvien = null, deleted = false, khachhang = null, mini = false, q = "" } = req.query
+      const { limit = 15, sort = "createAt", page = 1, nhanvien = null, deleted = false, khachhang = null, mini = false, q = "", role = "" } = req.query
       const query = { deleted: deleted }
 
 
       if (q) {
         query.madh = { $regex: q }
+      }
+
+      if (role === "Nhân viên") {
+        query.nhanvien = { $regex: nhanvien }
       }
 
       if (nhanvien) {

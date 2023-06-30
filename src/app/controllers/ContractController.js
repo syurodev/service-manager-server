@@ -10,9 +10,43 @@ class ContractController {
   //[POST] /api/contract/create
   async create(req, res) {
     try {
-      const { tenhd, giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
+      const { tenhd = "", giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
         sotientt = 0, sotienconthieu = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loadhd, nhanvien,
         doanhsotinhcho, khachhang, donhang } = req.body
+
+      if (tenhd === "") {
+        return res.status(201).json({
+          status: false,
+          message: "Tên hợp đồng không được bỏ trống"
+        })
+      }
+
+      if (khachhang === "") {
+        return res.status(201).json({
+          status: false,
+          message: "Vui lòng chọn khách hàng"
+        })
+      }
+
+      if (donhang === "") {
+        return res.status(201).json({
+          status: false,
+          message: "Vui lòng chọn đơn hàng"
+        })
+      }
+
+      if (donhang) {
+        const checkOrder = await orderSchema.findById(donhang)
+
+        if (checkOrder) {
+          if (checkOrder.toString() !== nhanvien.toString()) {
+            return res.status(201).json({
+              status: false,
+              message: "Bạn không có quyền tạo hợp đồng với đơn hàng này"
+            })
+          }
+        }
+      }
 
 
       const existingContract = await contractSchema.find({ mahd: { $regex: mahd } })
@@ -20,8 +54,8 @@ class ContractController {
 
       if (existingContract.length > 0) {
         return res.status(201).json({
+          status: false,
           message: "Mã hợp đồng đã tồn tại",
-          contract: existingContract
         })
       }
 
@@ -44,7 +78,7 @@ class ContractController {
       }
 
       await newContractData.save()
-      res.status(201).json({ message: "Tạo hợp đồng thành công", contract: newContractData })
+      res.status(201).json({ status: true, message: "Tạo hợp đồng thành công", contract: newContractData })
 
     } catch (error) {
       console.log(error)
