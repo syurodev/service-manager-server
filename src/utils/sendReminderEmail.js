@@ -11,7 +11,7 @@ const sendReminderEmail = async (contract) => {
   const day = dateObj.getUTCDate();
   const month = dateObj.getUTCMonth() + 1;
   const year = dateObj.getUTCFullYear();
-  const formattedString = `${day}-${month}-${year}`;
+  const formattedString = `${year}-${month}-${day}`;
 
   if (customer.email) {
     const emailContent = `<p>Xin chào ${customer.name},</p><p>Đây là email nhắc nhở về hợp đồng của bạn sẻ đến hạng vào ngày ${formattedString}.</p>`;

@@ -41,10 +41,10 @@ async function generateCode({ type }) {
 function generateUniqueCode(type) {
   const timestamp = Date.now();
   const date = new Date(timestamp);
-  const day = date.getUTCDate();
-  const month = date.getUTCMonth() + 1;
+  const day = String(dateObj.getUTCDate()).padStart(2, "0");
+  const month = String(dateObj.getUTCMonth() + 1).padStart(2, "0");
   const year = date.getUTCFullYear();
-  const formattedString = `${day}-${month}-${year}`;
+  const formattedString = `${year}-${month}-${day}`;
 
   const randomDigits = Math.floor(Math.random() * 10000);
   const orderCode = `${type}-${formattedString}-${randomDigits}`;
