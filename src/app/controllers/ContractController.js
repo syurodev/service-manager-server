@@ -14,7 +14,7 @@ class ContractController {
   async create(req, res) {
     try {
       const { tenhd = "", giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
-        sotientt = 0, sotienconthieu = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loaihd, nhanvien,
+        sotientt = 0, sotienconthieu = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loaihd, nhanvien, role = "",
         doanhsotinhcho, khachhang, donhang } = req.body
 
       if (tenhd === "") {
@@ -48,7 +48,7 @@ class ContractController {
       if (donhang) {
         const checkOrder = await orderSchema.findById(donhang)
 
-        if (checkOrder) {
+        if (checkOrder && role === "Nhân viên") {
           if (checkOrder.nhanvien.toString() !== nhanvien.toString()) {
             return res.status(201).json({
               status: false,
