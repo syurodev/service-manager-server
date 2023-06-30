@@ -135,7 +135,7 @@ class OrderController {
         query.nhanvien = nhanvien
       }
 
-      if (nhanvien) {
+      if (nhanvien && mini === false) {
         query.nhanvien = nhanvien
       }
 
