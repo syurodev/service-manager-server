@@ -1,9 +1,12 @@
 const contractSchema = require("../models/Contract")
 const contractTypeSchema = require("../models/ContractType")
 const orderSchema = require("../models/Order")
+const orderItemSchema = require("../models/OrderItem")
+const commoditySchema = require("../models/Commodity")
 const customerSchema = require("../models/Customer")
 const generateCode = require("../../utils/generateCode")
 
+const mailer = require("../../utils/mailer")
 const scheduleReminder = require("../../utils/sendReminderEmail")
 
 class ContractController {
@@ -57,13 +60,129 @@ class ContractController {
         doanhsotinhcho, khachhang, donhang
       })
 
-      if (guiemail) {
+      if (canhbaohh) {
         const customerEmail = await customerSchema.findById(khachhang, "email")
         if (customerEmail.email) {
           scheduleReminder(newContractData)
         } else {
           return res.status(201).json({ message: "Vui lòng thêm email khách hàng trước khi kích hoạt cảnh báo hết hạn" })
         }
+      }
+
+      if (guiemail) {
+        const customerEmail = await customerSchema.findById(khachhang, "name email")
+        if (customerEmail.email) {
+          const orderItems = await orderSchema.findById(donhang)
+
+          const itemsListPromises = orderItems.items.map(async (item) => {
+            const orderItem = await orderItemSchema.findById(item);
+            const commodity = await commoditySchema.findById(orderItem.hanghoa);
+            if (commodity) {
+              return `
+                <tr
+                  <td>${commodity.name}</td> 
+                  <td>${orderItem.soluong}</td>
+                </tr>
+                `;
+            }
+          });
+
+          const itemsList = await Promise.all(itemsListPromises);
+          const giatrihopdong = giatrihd.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+
+
+          mailer.sendMail(customerEmail.email, "Cảm ơn bạn đã đặt hàng!", `
+          <!DOCTYPE html>
+            <html>
+            <head>
+              <title>Cảm ơn bạn đã đặt hàng!</title>
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  margin: 0;
+                  padding: 0;
+                }
+  
+                .container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 20px;
+                }
+
+                .tableContent {
+                  width: 100%;
+                }
+
+                .table {
+                  width: 100%;
+                }
+
+                thead > tr {
+                  background-color: #d8e2dc; 
+                }
+
+                th {
+                  white-space: nowrap;
+                  margin: 0 10px;
+                  font-weight: 500;
+                  text-align: center;
+                  padding: 10px 10px;
+                }
+
+                tbody > tr > td {
+                  padding: 12px 20px;
+                  white-space: nowrap;
+                }
+  
+                h1 {
+                  font-size: 24px;
+                  margin-bottom: 20px;
+                }
+  
+                p {
+                  font-size: 16px;
+                  margin-bottom: 10px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <p>Xin chào ${customerEmail.name},</p>
+                <p>Cảm ơn bạn đã đặt hàng của chúng tôi. Chúng tôi rất trân trọng sự tin tưởng và hỗ trợ của bạn.</p>
+                <p>Chi tiết hợp đồng của bạn:</p>
+                <p>Mã hợp đồng: ${mahd}</p>
+                <p>Danh sách hàng hoá: </p>
+                <p>Giá trị hợp đồng: ${giatrihopdong} </p>
+                <p>Ngày bắt đầu hợp đồng: ${ngaybatdau} </p>
+                <p>Ngày kết thúc hợp đồng: ${ngayketthuc} </p>
+                <div class="tableWrapper">
+                  <div class="tableContent">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Tên hàng hoá</th>
+                          <th>Số lượng</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      ${itemsList.join('')}
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <p>Chúng tôi sẽ xử lý đơn hàng của bạn càng sớm càng tốt. Nếu bạn có bất kỳ câu hỏi hoặc yêu cầu đặc biệt nào, vui lòng liên hệ với chúng tôi.</p>
+                <p>Xin cảm ơn một lần nữa!</p>
+                <p>Trân trọng,</p>
+                <p>Đội ngũ của chúng tôi</p>
+              </div>
+            </body>
+            </html>
+          `)
+        } else {
+          return res.status(201).json({ message: "Vui lòng thêm email khách hàng trước khi kích hoạt gửi email" })
+        }
+
       }
 
       await newContractData.save()
