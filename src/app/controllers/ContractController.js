@@ -363,20 +363,23 @@ class ContractController {
       const cacheKey = "contracttypes";
       req.cache.del(cacheKey);
 
-      const existingContractType = await contractTypeSchema.find({ loaihd: { $regex: loaihd, $options: "i" } })
+      const existingContractType = await contractTypeSchema.findOne({ loaihd: { $regex: loaihd, $options: "i" } })
 
-      if (existingContractType.length > 0) {
-        return res.status(201).json({ message: "Loại hợp đồng đã tồn tại" })
+      if (existingContractType) {
+        if (existingContractType.loaihd.toLowerCase() === loaihd.toLowerCase()) {
+
+          return res.status(201).json({ status: false, message: "Tên loại hợp đồng đã tồn tại" })
+        }
       }
 
       const newContractType = new contractTypeSchema({
         loaihd,
-        mota
       })
 
       await newContractType.save()
 
       res.status(201).json({
+        status: true,
         message: "Thêm loại hợp đồng thành công",
         newContractType
       })
