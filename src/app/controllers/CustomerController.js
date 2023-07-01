@@ -16,19 +16,19 @@ class CustomerController {
       }
 
       if (loaikhachhang) {
-        query.loaikhachhang = { $regex: loaikhachhang }
+        query.loaikhachhang = loaikhachhang
       }
       if (tinh) {
-        query.tinh = { $regex: tinh }
+        query.tinh = tinh
       }
       if (phuong) {
-        query.phuong = { $regex: phuong }
+        query.phuong = phuong
       }
       if (xa) {
-        query.xa = { $regex: xa }
+        query.xa = xa
       }
       if (nhanvien) {
-        query.nhanvien = { $regex: nhanvien }
+        query.nhanvien = nhanvien
       }
 
       if (mini) {
