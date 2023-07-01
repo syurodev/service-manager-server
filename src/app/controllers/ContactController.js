@@ -17,15 +17,15 @@ class ContactController {
       }
 
       if (name?.trim() === "") {
-        return res.status(201).json({ message: "Tên người liên hệ là bắt buộc" })
+        return res.status(201).json({ status: false, message: "Tên người liên hệ là bắt buộc" })
       }
 
       const existingContact = await contactSchema.find({ name: { $regex: name, $options: "i" } })
 
       if (existingContact.length > 0) {
         return res.status(201).json({
+          status: false,
           message: "Người liên hệ này đã tồn tại",
-          existingContact
         })
       }
 
@@ -43,8 +43,8 @@ class ContactController {
       await contact.save()
 
       res.status(201).json({
+        status: true,
         message: "Tạo người liên hệ thành công",
-        contact
       })
     } catch (error) {
       console.log(error)

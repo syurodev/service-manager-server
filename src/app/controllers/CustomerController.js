@@ -161,12 +161,12 @@ class CustomerController {
         })
 
         await customer.save()
-        res.status(201).json(customer);
+        res.status(201).json({ status: true, customer });
 
       } else {
         res.status(201).json({
+          status: false,
           message: "Người dùng đã được tạo trước đó",
-          existingCustomer
         });
       }
 
