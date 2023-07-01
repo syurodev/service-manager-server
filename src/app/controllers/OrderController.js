@@ -166,17 +166,18 @@ class OrderController {
           currentPage = totalPages;
         }
 
-        const orders = await orderSchema.find(query, "ngaybatdau ngayketthuc items")
+        const orders = await orderSchema.find(query, "madh items")
           .populate("nhanvien", "hoten")
+          .populate("khachhang", "name")
           .limit(limit)
           .sort(sort)
           .skip(skip)
 
         const modifiedOrders = orders.map((order) => ({
           _id: order._id,
-          ngaybatdau: order.ngaybatdau,
-          ngayketthuc: order.ngayketthuc,
+          madh: order.madh,
           nhanvien: order.nhanvien,
+          khachhang: order.khachhang,
           orderItemCount: order.items.length,
         }));
 
@@ -326,7 +327,13 @@ class OrderController {
       const { _id = "", staffid = "" } = req.body
 
       if (!_id || !staffid) {
-        return res.status(401).json({ message: "Thiếu dữ liệu để thực hiện thao tác xoá" })
+        return res.status(201).json({ message: "Thiếu dữ liệu để thực hiện thao tác xoá" })
+      }
+
+      const contract = await contractSchema.findOne({ donhang: _id })
+
+      if (contract) {
+        return res.status(201).json({ message: "Đơn hàng này đã có hợp đồng không thể xoá" })
       }
 
       const order = await orderSchema.findById(_id)
@@ -340,7 +347,7 @@ class OrderController {
 
         res.status(201).json({ message: "Đơn hàng đã được chuyển đến thùng rác" })
       } else {
-        res.status(501).json({ message: "Không tìm thấy đơn hàng" })
+        res.status(404).json({ message: "Không tìm thấy đơn hàng" })
       }
 
     } catch (error) {
