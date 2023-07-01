@@ -122,7 +122,7 @@ class ContactController {
   //[GET] /api/contact/get
   async get(req, res) {
     try {
-      const { limit = 10, sort = "createAt", page = 1, q = "", deleted = false, lienhechinh = false, trangthai = null, chucvu = null } = req.query
+      const { limit = 10, sort = "createAt", page = 1, q = "", deleted = false, lienhechinh = false, trangthai = null, chucvu = null, mini = false } = req.query
       const query = { deleted: deleted }
 
       if (q) {
@@ -147,18 +147,25 @@ class ContactController {
         currentPage = totalPages;
       }
 
-      const result = await contactSchema.find(query, "name sdt email lienhechinh trangthai")
-        .populate("chucvu", { name: 1 })
-        .limit(limit)
-        .sort(sort)
-        .skip(skip)
+      if (mini) {
+        const result = await contactSchema.find(query, "name")
+        res.status(201).json({
+          data: result
+        })
+      } else {
+        const result = await contactSchema.find(query, "name sdt email lienhechinh trangthai")
+          .populate("chucvu", { name: 1 })
+          .limit(limit)
+          .sort(sort)
+          .skip(skip)
 
-      res.status(201).json({
-        total: count,
-        currentPage: page,
-        totalPages,
-        data: result
-      })
+        res.status(201).json({
+          total: count,
+          currentPage: page,
+          totalPages,
+          data: result
+        })
+      }
     } catch (error) {
       console.log(error)
       res.status(500).json("Internal Server Error", error)
