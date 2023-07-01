@@ -187,6 +187,7 @@ class CustomerController {
 
       if (result) {
         res.status(201).json({
+          status: false,
           message: "Loại khách hàng đã tồn tại"
         })
       } else {
@@ -200,6 +201,7 @@ class CustomerController {
         req.cache.set(cacheKey, customerTypes);
 
         res.status(201).json({
+          status: true,
           message: "Thêm loại khách hàng thành công",
           customerTypes
         })
