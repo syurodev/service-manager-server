@@ -527,9 +527,9 @@ class ContractController {
       if (result.deletedCount === 1) {
         const cacheKey = `contract${_id}`;
         req.cache.del(cacheKey);
-        res.status(204).json({ status: true, message: "Xoá hợp đồng thành công" });
+        res.status(201).json({ status: true, message: "Xoá hợp đồng thành công" });
       } else {
-        res.status(404).json({ status: false, message: "Không tìm thấy hợp đồng" });
+        res.status(201).json({ status: false, message: "Không tìm thấy hợp đồng" });
       }
     } catch (error) {
       console.log(error)
