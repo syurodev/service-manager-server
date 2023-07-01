@@ -5,6 +5,7 @@ const contractController = require("../../app/controllers/ContractController");
 
 router.post("/type", contractController.addContractType);
 router.get("/types", contractController.getContractTypes);
+router.patch("/type", contractController.editContractType);
 
 router.post("/create", contractController.create);
 router.patch("/change-info", contractController.changeInfo);

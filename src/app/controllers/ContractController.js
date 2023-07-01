@@ -359,7 +359,7 @@ class ContractController {
   //[POST] /api/contract/type
   async addContractType(req, res) {
     try {
-      const { loaihd, mota = "" } = req.body
+      const { loaihd } = req.body
       const cacheKey = "contracttypes";
       req.cache.del(cacheKey);
 
@@ -405,6 +405,45 @@ class ContractController {
       } else {
         res.status(404).json({ message: "Không tìm thấy loại hợp đồng" })
       }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal Server Error" })
+    }
+  }
+
+  //[PATCH] /api/contract/type
+  async editContractType(req, res) {
+    try {
+      const { id, loaihd } = req.body
+
+      const contractType = await contractTypeSchema.findById(id)
+      console.log(contractType)
+
+
+      if (contractType) {
+        const existingContactTypes = contractTypeSchema.find({ loaihd: { $regex: loaihd, $options: "i" } })
+        if (existingContactTypes.length > 0) {
+          for (let i = 0; i < existingContactTypes.length; i++) {
+            const existingContactType = existingContactTypes[i]
+
+            if (existingContactType.loaihd.toLowerCase() !== contractType.loaihd.toLowerCase() && existingContactType.loaihd.toLowerCase() === loaihd.toLowerCase()) {
+              return res.status(201).json({ status: false, message: "Tên loại hợp đồng đã tồn tại" })
+            }
+          }
+        } else {
+          const cacheKey = "contracttypes";
+          req.cache.del(cacheKey);
+
+
+          contractType.loaihd = loaihd || contractType.loaihd
+
+          await contractType.save()
+          return res.status(201).json({ status: true, message: "Cập nhật tên loại hợp đồng thành công" })
+        }
+      } else {
+        return res.status(201).json({ status: false, message: "Không tìm thấy loại hợp đồng" })
+      }
+
     } catch (error) {
       console.log(error)
       res.status(500).json({ error: "Internal Server Error" })
