@@ -26,29 +26,33 @@ class OrderController {
         items: []
       });
 
-      for (const orderItemData of orderItems) {
-        const { hanghoa, soluong, chietkhau } = orderItemData;
+      if (orderItems) {
+        for (const orderItemData of orderItems) {
+          const { hanghoa, soluong, chietkhau } = orderItemData;
 
-        const commodity = await commoditySchema.findById(hanghoa);
+          const commodity = await commoditySchema.findById(hanghoa);
 
-        if (!commodity) {
-          return res.status(400).json({ message: 'Hàng hoá không tồn tại' });
+          if (!commodity) {
+            return res.status(400).json({ message: 'Hàng hoá không tồn tại' });
+          }
+
+          if (commodity.soluongtrongkho < soluong) {
+            return res.status(400).json({ message: 'Không đủ số lượng hàng hoá trong kho' });
+          }
+
+          const orderItem = orderItemSchema({
+            hanghoa,
+            soluong,
+            chietkhau
+          });
+
+          const savedOrderItem = await orderItem.save();
+          order.items.push(savedOrderItem._id);
+
+          await commoditySchema.findByIdAndUpdate(hanghoa, { $inc: { soluongtrongkho: -soluong } });
         }
-
-        if (commodity.soluongtrongkho < soluong) {
-          return res.status(400).json({ message: 'Không đủ số lượng hàng hoá trong kho' });
-        }
-
-        const orderItem = orderItemSchema({
-          hanghoa,
-          soluong,
-          chietkhau
-        });
-
-        const savedOrderItem = await orderItem.save();
-        order.items.push(savedOrderItem._id);
-
-        await commoditySchema.findByIdAndUpdate(hanghoa, { $inc: { soluongtrongkho: -soluong } });
+      } else {
+        return res.status(201).json({ message: "Đơn hàng phải có ít nhất 1 hàng hoá" })
       }
 
       const customer = await customerSchema.findById(khachhang, "name email")
