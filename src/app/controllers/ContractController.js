@@ -244,7 +244,7 @@ class ContractController {
         .populate("khachhang", "name")
         .populate("donhang", "madh")
         .limit(limit)
-        .sort(sort)
+        .sort({ sort: -1 })
         .skip(skip)
 
       res.status(201).json({
@@ -473,7 +473,7 @@ class ContractController {
       const { _id = "", staffid = "" } = req.body
 
       if (!_id || !staffid) {
-        return res.status(401).json("Thiếu dữ liệu để thực hiện thao tác xoá")
+        return res.status(401).json({ status: false, message: "Thiếu dữ liệu để thực hiện thao tác xoá" })
       }
 
       const contract = await contractSchema.findById(_id)
@@ -484,9 +484,9 @@ class ContractController {
         contract.deleteAt = Date.now()
 
         await contract.save()
-        res.status(201).json({ message: "Hợp đồng đã được chuyển đến thùng rác" })
+        res.status(201).json({ status: true, message: "Hợp đồng đã được chuyển đến thùng rác" })
       } else {
-        res.status(404).json({ message: "Không tìm thấy hợp đồng" })
+        res.status(404).json({ status: false, message: "Không tìm thấy hợp đồng" })
       }
     } catch (error) {
       console.log(error)
@@ -507,9 +507,9 @@ class ContractController {
         contract.deleteAt = null
 
         await contract.save()
-        res.status(201).json({ message: "Khôi phục thành công" })
+        res.status(201).json({ status: true, message: "Khôi phục thành công" })
       } else {
-        res.status(404).json({ message: "Không tìm thấy hợp đồng" })
+        res.status(404).json({ status: false, message: "Không tìm thấy hợp đồng" })
       }
     } catch (error) {
       console.log(error)
@@ -527,9 +527,9 @@ class ContractController {
       if (result.deletedCount === 1) {
         const cacheKey = `contract${_id}`;
         req.cache.del(cacheKey);
-        res.status(204).json({ message: "Xoá hợp đồng thành công" });
+        res.status(204).json({ status: true, message: "Xoá hợp đồng thành công" });
       } else {
-        res.status(404).json({ message: "Không tìm thấy hợp đồng" });
+        res.status(404).json({ status: false, message: "Không tìm thấy hợp đồng" });
       }
     } catch (error) {
       console.log(error)
