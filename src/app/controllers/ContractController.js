@@ -414,9 +414,13 @@ class ContractController {
   //[PATCH] /api/contract/change-info
   async changeInfo(req, res) {
     try {
-      const { _id, mahd, giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
+      const { _id, giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
         sotientt = 0, sotienconthieu = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loaihd, nhanvien,
-        doanhsotinhcho, khachhang, donhang } = req.body
+        doanhsotinhcho, khachhang, donhang, role = null } = req.body
+
+      if (role === "Nhân viên") {
+        return res.status(201).json({ status: false, message: "Bạn không có quyền chỉ sửa hợp đồng" })
+      }
 
       const contract = await contractSchema.findById(_id)
 
@@ -427,7 +431,6 @@ class ContractController {
           return res.status(201).json({ message: "Mã hợp đồng đã tồn tại" })
         }
 
-        contract.mahd = mahd || contract.mahd
         contract.giatrihd = giatrihd || contract.giatrihd
         contract.ngaybatdau = ngaybatdau || contract.ngaybatdau
         contract.ngayketthuc = ngayketthuc || contract.ngayketthuc
