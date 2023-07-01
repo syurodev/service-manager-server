@@ -238,7 +238,7 @@ class TransactionController {
       const { _id = "", staffid = "" } = req.body
 
       if (!_id || !staffid) {
-        return res.status(401).json("Thiếu dữ liệu để thực hiện thao tác xoá")
+        return res.status(201).json({ status: false, message: "Thiếu dữ liệu để thực hiện thao tác xoá" })
       }
 
       const transaction = await transactionSchema.findById(_id)
@@ -249,9 +249,9 @@ class TransactionController {
         transaction.deleteAt = Date.now()
 
         await transaction.save()
-        res.status(201).json({ message: "Giao dịch đã được chuyển đến thùng rác" })
+        res.status(201).json({ status: true, message: "Giao dịch đã được chuyển đến thùng rác" })
       } else {
-        res.status(404).json({ message: "Không tìm thấy giao dịch" })
+        res.status(201).json({ status: false, message: "Không tìm thấy giao dịch" })
       }
     } catch (error) {
       console.log(error)
@@ -272,9 +272,9 @@ class TransactionController {
         transaction.deleteAt = null
 
         await contract.save()
-        res.status(201).json({ message: "Khôi phục thành công" })
+        res.status(201).json({ status: true, message: "Khôi phục thành công" })
       } else {
-        res.status(204).json({ message: "Không tìm thấy giao dịch" })
+        res.status(201).json({ status: false, message: "Không tìm thấy giao dịch" })
       }
     } catch (error) {
       console.log(error)
@@ -292,9 +292,9 @@ class TransactionController {
       if (result.deletedCount === 1) {
         const cacheKey = `transaction${_id}`;
         req.cache.del(cacheKey);
-        res.status(204).json({ message: "Xoá hợp đồng thành công" });
+        res.status(201).json({ status: true, message: "Xoá hợp đồng thành công" });
       } else {
-        res.status(404).json({ message: "Không tìm thấy hợp đồng" });
+        res.status(201).json({ status: false, message: "Không tìm thấy hợp đồng" });
       }
     } catch (error) {
       console.log(error)
