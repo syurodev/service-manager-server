@@ -416,7 +416,7 @@ class ContractController {
     try {
       const { _id, giatrihd, ngaybatdau, ngayketthuc, canhbaohh, hinhthuctt, loaitt,
         sotientt = 0, sotienconthieu = 0, ngaytt, soquy, xacnhan = false, ghichu = "", guiemail = false, ghichuthuong = "", loaihd, nhanvien,
-        doanhsotinhcho, khachhang, donhang, role = null } = req.body
+        doanhsotinhcho, khachhang, donhang, role = null, tenhd = "" } = req.body
 
       if (role === "Nhân viên") {
         return res.status(201).json({ status: false, message: "Bạn không có quyền chỉ sửa hợp đồng" })
@@ -425,12 +425,6 @@ class ContractController {
       const contract = await contractSchema.findById(_id)
 
       if (contract) {
-        const existingContract = await contractSchema.find({ mahd: { $regex: mahd } })
-
-        if (existingContract.length > 0) {
-          return res.status(201).json({ message: "Mã hợp đồng đã tồn tại" })
-        }
-
         contract.giatrihd = giatrihd || contract.giatrihd
         contract.ngaybatdau = ngaybatdau || contract.ngaybatdau
         contract.ngayketthuc = ngayketthuc || contract.ngayketthuc
@@ -455,9 +449,15 @@ class ContractController {
         const cacheKey = `contract${_id}`;
         req.cache.del(cacheKey);
 
-        res.status(201).json({ message: "Chỉnh sửa thông tin hợp đồng thành công" })
+        res.status(201).json({
+          status: true,
+          message: "Chỉnh sửa thông tin hợp đồng thành công"
+        })
       } else {
-        res.status(404).json({ message: "Không tìm thấy thông tin hợp đồng thành công" })
+        res.status(404).json({
+          status: false,
+          message: "Không tìm thấy thông tin hợp đồng thành công"
+        })
       }
 
     } catch (error) {
