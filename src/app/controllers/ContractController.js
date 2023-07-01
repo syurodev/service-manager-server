@@ -425,6 +425,7 @@ class ContractController {
       const contract = await contractSchema.findById(_id)
 
       if (contract) {
+        contract.tenhd = tenhd || contract.tenhd
         contract.giatrihd = giatrihd || contract.giatrihd
         contract.ngaybatdau = ngaybatdau || contract.ngaybatdau
         contract.ngayketthuc = ngayketthuc || contract.ngayketthuc
