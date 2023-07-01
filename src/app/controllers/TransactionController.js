@@ -135,7 +135,7 @@ class TransactionController {
       const existingTransaction = await transactionSchema.find({ name: { $regex: name, $options: "i" } })
 
       if (existingTransaction.length > 0) {
-        return res.status(201).json({ message: "Giao dịch đã tồn tại" })
+        return res.status(201).json({ status: false, message: "Giao dịch đã tồn tại" })
       }
 
       const newTransaction = new transactionSchema({
@@ -157,7 +157,7 @@ class TransactionController {
       })
 
       await newTransaction.save()
-      res.status(201).json({ message: "Tạo giao dịch thành công" })
+      res.status(201).json({ status: true, message: "Tạo giao dịch thành công" })
     } catch (error) {
       console.log(error)
       res.status(500).json({ error: "Internal Server Error" })
