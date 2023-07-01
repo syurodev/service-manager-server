@@ -58,10 +58,13 @@ class ContractController {
         }
 
         if (checkOrder) {
-          return res.status(201).json({
-            status: false,
-            message: "Đơn hàng đã có hợp đồng"
-          })
+          const existingContract = await contractSchema.findOne({ donhang: donhang })
+          if (existingContract) {
+            return res.status(201).json({
+              status: false,
+              message: "Đơn hàng đã có hợp đồng"
+            })
+          }
         }
       }
 
