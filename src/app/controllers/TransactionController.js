@@ -344,24 +344,23 @@ class TransactionController {
         query.name = { $regex: q, $options: "i" }
       }
 
-      if (loaigd !== null) {
+      if (loaigd) {
         query.loaigd = loaigd
       }
 
-      if (trangthaigd !== null) {
+      if (trangthaigd) {
         query.trangthaigd = trangthaigd
       }
 
-      if (khachhang !== null) {
+      if (khachhang) {
         query.khachhang = khachhang
       }
 
-      if (nguoilienhe !== null) {
-        console.log("first")
+      if (nguoilienhe) {
         query.nguoilienhe = nguoilienhe
       }
 
-      if (nhanvien !== null) {
+      if (nhanvien) {
         query.nhanvien = nhanvien
       }
 
