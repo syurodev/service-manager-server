@@ -33,11 +33,11 @@ class OrderController {
           const commodity = await commoditySchema.findById(hanghoa);
 
           if (!commodity) {
-            return res.status(400).json({ message: 'Hàng hoá không tồn tại' });
+            return res.status(201).json({ message: 'Hàng hoá không tồn tại' });
           }
 
           if (commodity.soluongtrongkho < soluong) {
-            return res.status(400).json({ message: 'Không đủ số lượng hàng hoá trong kho' });
+            return res.status(201).json({ message: 'Không đủ số lượng hàng hoá trong kho' });
           }
 
           const orderItem = orderItemSchema({
