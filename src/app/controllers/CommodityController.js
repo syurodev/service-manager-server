@@ -7,12 +7,12 @@ class CommodityController {
   //[POST] /api/commodity/create
   async create(req, res) {
     try {
-      const { name, image, gianhap, giabanra, mota, thue, trangthai, soluongtrongkho, dvt, loaihh } = req.body
+      const { name, image, gianhap, giabanra, mota, thue, soluongtrongkho, dvt, loaihh } = req.body
 
       const mahh = await generateCode({ type: "HH" })
 
       const data = new commoditySchema({
-        mahh, name, image, gianhap, giabanra, mota, thue, trangthai, soluongtrongkho, dvt, loaihh
+        mahh, name, image, gianhap, giabanra, mota, thue, soluongtrongkho, dvt, loaihh
       })
 
       await data.save()
@@ -146,7 +146,7 @@ class CommodityController {
   //[GET] /api/commodity
   async commodities(req, res) {
     try {
-      const { limit = 10, sort = "createAt", page = 1, q = "", loaihh = null, trangthai = null, dvt = null } = req.query
+      const { limit = 10, sort = "createAt", page = 1, q = "", loaihh = null, dvt = null } = req.query
       let query = {}
 
       if (q) {
@@ -161,9 +161,7 @@ class CommodityController {
       if (loaihh) {
         query.loaihh = loaihh;
       }
-      if (trangthai) {
-        query.trangthai = trangthai;
-      }
+
       if (dvt) {
         query.dvt = dvt;
       }
@@ -201,7 +199,7 @@ class CommodityController {
   //[PATCH] /api/commodity/change-info
   async changeInfo(req, res) {
     try {
-      const { _id, mahh = "", name = "", image, gianhap, giabanra, mota, thue, trangthai, soluongtrongkho, dvt, loaihh } = req.body
+      const { _id, mahh = "", name = "", image, gianhap, giabanra, mota, thue, soluongtrongkho, dvt, loaihh } = req.body
 
       const commoditiy = await commoditySchema.findById(_id)
 
@@ -237,7 +235,6 @@ class CommodityController {
         commoditiy.giabanra = giabanra || commoditiy.giabanra
         commoditiy.mota = mota || commoditiy.mota
         commoditiy.thue = thue || commoditiy.thue
-        commoditiy.trangthai = trangthai || commoditiy.trangthai
         commoditiy.soluongtrongkho = soluongtrongkho || commoditiy.soluongtrongkho
         commoditiy.dvt = dvt || commoditiy.dvt
         commoditiy.loaihh = loaihh || commoditiy.loaihh

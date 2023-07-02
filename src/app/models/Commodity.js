@@ -9,7 +9,6 @@ const commoditySchema = new Schema({
   giabanra: { type: Number, default: 0 },
   mota: { type: String, default: "" },
   thue: { type: Number, default: 0 },
-  trangthai: { type: Number, default: 0 },
   createAt: { type: Date, default: Date.now },
   soluongtrongkho: { type: Number, default: 1 },
   deleted: { type: Boolean, default: false },
